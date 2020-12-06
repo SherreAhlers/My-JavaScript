@@ -62,6 +62,151 @@ const restaurant = {
   },
 };
 
+// LOOPING OBJECTS
+// propety names
+
+const properties = Object.keys[openingHours];
+// console.log(properties);
+// this will output:
+// (3) ['thu', 'fri', 'sat']
+// console.log(`We are open on ${properties.length} days.`);
+// this will output:
+// We are open on 3 days.
+
+let openStr = `We are open on ${properties.length} days:`;
+for (const day of properties) {
+  openStr += `${day}, `;
+}
+// console.log(openStr);
+// this will output:
+// We are open on 3 days: thu, fri, sat
+
+// for (const day of Object.keys(openingHours)) {
+// console.log(day);
+// this will output:
+// thu
+// fri
+// sat
+// {thu: {...}, fri: {...}, sat: {...}}
+// }
+
+// Property Values
+const values = Object.values(openingHours);
+// console.log(values);
+// This will output:
+// (3) [{...}, {...}, {...}]
+
+// we need entries
+// Entire Object
+// Object.entries(openingHours);
+// OR
+const entries = Object.entries(openingHours);
+// console.log(entries);
+// this will output:
+// (3) [Array(2), Array(2), Array(2)]
+// for (const x of entries) {
+// console.log(x);
+// this will output:
+// (2) ['thu', {...}]
+// (2) ['fri', {...}]
+// (2) ['sat', {...}]
+// console.log(`On ${key} we open at ${open} and close at ${close}.`);
+// will output: KEY is not defined.
+
+// INSTEAD DO with destructuring.......
+for (const [key, { open, close }] of entries) {
+  console.log(`On ${key} we open at ${open} and close at ${close}.`);
+  // this will output:
+  // On thu we open at 12 and close at 22
+  // On fri we open at 11 and close at 23
+  // On sat we open at 0 and close at 24
+}
+// }
+// console.log(restaurant.openingHours.mon);
+// this will output undefined
+// console.log(restaurant.openingHours.mon.open);
+// this will output: TypeError: Cannot read property 'open' of undefined.
+
+// if (restaurant.openingHours.mon) {
+// console.log(restaurant.openingHours.mon.open);
+// this will output: nothing because mon doesn't exist and there is no default value for it to fall back on.
+// }
+if (restaurant.openingHours && restaurant.openingHours.mon)
+  // console.log(restaurant.openingHours.mon.open);
+
+  // WITH optional chaining
+
+  // console.log(restaurant.openingHours.mon?.open);
+  // the above is saying if the property before the ? exits than it will run the statement, if it doesn't exits
+  // the output will be: undefined
+
+  console.log(restaurant.openingHours?.mon?.open);
+// the above says if opeiningHours doesn't exist then stop running and don't go to mon, if it does exist check if monday exists next.
+
+// Example
+
+const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+
+for (const day of days) {
+  // console.log(day);
+  // this will output:
+  // mon
+  // tue
+  // wed
+  // thu
+  // fri
+  // sat
+  // sun
+  // const open = restaurant.openingHours[day]?.open;
+  // we used the bracket notation because we are declaring the variable days instead of the property name.
+  // this will also check if open exists
+  // console.log(`On ${day}, we open at ${open}.`);
+  // this will output:
+  // On mon, we open at undefined.
+  // On tue, we open at undefined.
+  // On wed, we open at undefined.
+  // On thu, we open at 12.
+  // On fri, we open at 11.
+  // On sat, we open at 0.
+  // On sun, we open at undefined.
+  // WE DO NOT LIKE THE UNDEFINEDS ABOVE
+  // const open = restaurant.openingHours[day]?.open || 'closed';
+  // console.log(`On ${day}, we open at ${open}.`);
+  // this will output:
+  // On mon, we open at closed.
+  // On tue, we open at closed.
+  // On wed, we open at closed.
+  // On thu, we open at 12.
+  // On fri, we open at 11.
+  // On sat, we open at closed. // here we have an error because the restaurant is open on sat but it is listed at 0 which is a falsy value so it is saying it is closed.
+  // On sun, we open at closed.
+  // TO FIX ABOVE ERROR ON SAT
+  const open = restaurant.openingHours[day]?.open ?? 'closed';
+  // use the ?? instead of || because we need the 0 on saturday to be a truthy value.
+  // console.log(`On ${day}, we open at ${open}.`);
+  // the output will be the same as above example only now sat will read like this:
+  // On sat, we open at 0.
+
+  // if (restaurant.openingHours.fri) {
+  // console.log(restaurant.openingHours.fri.open);
+  // this will output: 11 because fri exists and has an opening time.
+  // }
+}
+
+// OPTIONAL CHANING ON METHODS!
+// console.log(restaurant.order?.(0, 1) ?? 'Method does not exist.');
+// the output will be:
+// (2) ["Focaccia", "Pasta"]
+
+// console.log(restaurant.orderRisotto?.(0, 1) ?? 'Method does not exist.');
+// this will output:
+// Method does not exist. because there is no orderRisotto method created previously
+
+// Optional CHAINGING ON ARRAYS
+const users = [{ name: 'Sherre', email: 'sherre.ahlers@gmail.com' }];
+console.log(users[0]?.name ?? 'User array empty.');
+// this will output: Sherre because there is a name in the users array, if there wasn't it would output 'User array empty.'
+
 restaurant.numGuests = 0;
 const guests3 = restaurant.numGuests || 10;
 // console.log(guests3);
