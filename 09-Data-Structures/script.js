@@ -62,6 +62,177 @@ const restaurant = {
   },
 };
 
+// ---------SETS-------------
+const orderSet = new Set([
+  'Pasta',
+  'Pizza',
+  'Pizza',
+  'Risotto',
+  'Pasta',
+  'Pizza',
+]);
+// console.log(orderSet);
+// this will output:
+// Set(3) // size of 3
+// [[Entries]]
+// 0: "Pasta"
+// 1: "Pizza"
+// 2: "Risotto"
+// size: (...)
+// __proto__: Set
+// all duplicates are gone, there are no key value pairs there are just values grouped together into a set
+// Sets are different from Arrays - order in sets is irrelevant
+// console.log(new Set('Sherre'));
+// this will output:
+// Set(4) {"S", "h", "e", "r"}
+// it will only show one entry of duplicates
+// so Sherre becomes 'S' 'h' 'e' 'r'
+// console.log(orderSet.size);
+// this will output:
+// 3  -- because it will not show duplicates
+
+// console.log(orderSet.has('Pizza'));
+// this will output:
+// true
+
+// console.log(orderSet.has('Bread'));
+// this will output:
+// false
+orderSet.add('Garlic Bread');
+orderSet.add('Garlic Bread');
+// console.log(orderSet);
+// this will output:
+// Set (4) {'Pasta', 'Pizza', 'Risotto', 'Garlic Bread'}
+// because even though we wrote it twice, the set will still only allow one to show up because it is the same type
+orderSet.delete('Risotto');
+// console.log(orderSet);
+// this will output:
+// Set(3) {"Pasta", "Pizza", "Garlic Bread"}
+// this is easy it just deletes from the array
+
+// THERE ARE NO INDEXS IN SETS - no way of getting values out of sets.
+// Will not need to get data out of a set because where it is in the set doesn't matter
+// Sets are just for seeing what is in something.
+
+// orderSet.clear();
+// the above will delete all elements in the set.
+
+// sets are iterable and we can loop over them
+// for (const order of orderSet) console.log(order);
+// this will output:
+// Pasta
+// Pizza
+// Garlic Bread
+
+// MAIN Use CASES for SETS
+// to remove duplicate values of arrays
+
+// EXAMPLE
+const staff = ['Waiter', 'Chef', 'Waiter', 'Manager', 'Chef', 'Waiter'];
+// we want a unique array without all the duplicates
+
+// const staffUnique = new Set(staff);
+// console.log(staffUnique);
+// this will output:
+// Set(3) {"Waiter", "Chef", "Manager"}
+
+// NOW WE WANT THE ABOVE OUTPUT TO BE AN ARRAY INSTEAD OF OBJECT
+
+const staffUnique = [...new Set(staff)];
+// console.log(staffUnique);
+// this will output:
+// Set(3) {"Waiter", "Chef", "Manager"}
+
+// console.log(
+// new Set(['Waiter', 'Chef', 'Waiter', 'Manager', 'Chef', 'Waiter']).size
+// );
+// will output:
+// 3 because it is telling us the size of the new array that doesn't have any duplicates
+
+// console.log(new Set('sherreahlers').size);
+// this will output:
+// 6 because that is how many letters are in the string above
+// sets are not the same as arrays!!
+// they are not as important as arrays.
+
+// ------- Map in JS -------
+
+// maps can have keys with any types -- in objects keys are always strings.
+const rest = new Map();
+rest.set('name', 'Classico Italiano');
+// the first string is the key name and the second string is the actual name of the restaurant
+rest.set(1, 'Firenze, Italy');
+rest.set(2, 'Lisbon, Portugal');
+// console.log(rest.set(2, 'Lisbon, Portugal'));
+// the output will be:
+// Map(3) {"name" => "Classico Italiano", 1 => "Firenze, Italy", 2 => "Lisbon, Portugal"}
+
+// set method returns a new set
+rest
+  .set('categories', ['Italian', 'Pizzeria', 'Vegetarian', 'Organic'])
+  .set('open', 11)
+  .set('close', 23)
+  .set(true, 'We are open :)')
+  .set(false, 'We are closed :(');
+// the above is now the new set
+// to read data from a map use the get method
+// console.log(rest.get('name'));
+// this will output:
+// Classico Italiano
+
+// console.log(rest.get(true));
+// this will output:
+// We are open :)
+// console.log(rest.get(1));
+// this will output:
+// Firenze, Italy
+
+const time = 21;
+// 9pm
+rest.get(time > rest.get('open') && time < rest.get('close'));
+// if current time is between 23 - 11. first true false value and the last will be true or false.
+
+// console.log(rest.get(time > rest.get('open') && time < rest.get('close')));
+// this will output:
+// We are open
+// because 21 falls between 11-23
+
+// console.log(rest.has('categories'));
+// this will output:
+// true
+rest.delete(2);
+// console.log(rest);
+// this will output:
+// Map(7) {"name" => "Classico Italiano", 1 => "Firenze, Italy", "categories" => Array(4), "open" => 11, "close" => 23, …}[[Entries]]0: {"name" => "Classico Italiano"}1: {1 => "Firenze, Italy"}2: {"categories" => Array(4)}3: {"open" => 11}4: {"close" => 23}5: {true => "We are open :)"}6: {false => "We are closed :("}size: (...)__proto__: Map
+
+// console.log(rest.size);
+// map has a size property
+// the output will be: 7
+
+rest.set([1, 2, 'Test']);
+// console.log(rest);
+// this will output:
+// Map(8) {"name" => "Classico Italiano", 1 => "Firenze, Italy", "categories" => Array(4), "open" => 11, "close" => 23, …}
+
+// console.log(rest.get([1, 2]));
+// this will output:
+// undefined
+
+const arr3 = [1, 2];
+rest.set(arr3, 'Test');
+rest.set(document.querySelector('h1'), 'Heading');
+// this will show up on the browser...
+
+// console.log(rest);
+// this will output:
+// Map(9) {"name" => "Classico Italiano", 1 => "Firenze, Italy", "categories" => Array(4), "open" => 11, "close" => 23, …}
+
+// console.log(rest.get(arr3));
+// this will output:
+// Test
+
+//
+
 // LOOPING OBJECTS
 // propety names
 
