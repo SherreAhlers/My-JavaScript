@@ -62,6 +62,99 @@ const restaurant = {
   },
 };
 
+// MAP ITERATIONS
+const question = new Map([
+  ['question', 'What is the best programming language in the world?'],
+  [1, 'C'],
+  [2, 'Java'],
+  [3, 'JavaScript'],
+  ['correct', 3],
+  [true, 'Correct!'],
+  [false, 'Try again!'],
+]);
+// console.log(question);
+// this will output:
+// Map(7)
+// [[Entries]]
+// 0: {"question" => "What is the best programming language in the world?"}
+// 1: {1 => "C"}
+// 2: {2 => "Java"}
+// 3: {3 => "JavaScript"}
+// 4: {"correct" => 3}
+// 5: {true => "Correct!"}
+// 6: {false => "Try again!"}
+// size: (...)
+// __proto__: Map
+
+// CONVERT Object into map
+// console.log(Object.entries(openingHours));
+// this will output:
+// (3) [Array(2), Array(2), Array(2)]
+
+// const hoursMap = new Map(Object.entries(openingHours));
+// console.log(hoursMap);
+// this will output:
+// Map(3) {'thu' => {...}, 'fri' => {...}, 'sat' => {...}}
+
+for (const [key, value] of question) {
+  // we only want to print the 3 arrays where the key is a number
+  // if (typeof key === 'number') console.log(`Answer ${key}: ${value}.`);
+  // this will output:
+  // Answer 1: C.
+  // Answer 2: Java.
+  // Answer 3: JavaScript.
+}
+// const answer = Number(prompt('Your answer?'));
+const answer = 3;
+// console.log(answer);
+// this will output:
+// whatever number selected when prompted... in this case I typed in 3 -- so the output is 3
+
+// console.log(question.get(question.get('correct') === answer));
+// if the answer typed was 3 the above will be true
+// I typed 2 -- output was Try Again!
+// I typed 3 -- output was Correct!
+
+// sometimes we need to convert a Map back to an array
+
+// console.log([...question]);
+// the output will be:
+// (7) [Array(2), Array(2), Array(2), Array(2), Array(2), Array(2), Array(2)]
+// 0: (2) ["question", "What is the best programming language in the world?"]
+// 1: (2) [1, "C"]
+// 2: (2) [2, "Java"]
+// 3: (2) [3, "JavaScript"]
+// 4: (2) ["correct", 3]
+// 5: (2) [true, "Correct!"]
+// 6: (2) [false, "Try again!"]
+// length: 7
+// __proto__: Array(0)
+// an array of arrays
+// console.log(question.entries());
+// this will output:
+// MapIterator {"question" => "What is the best programming language in the world?", 1 => "C", 2 => "Java", 3 => "JavaScript", "correct" => 3, …}
+// the above you will have to spread and put into a new array
+
+// console.log(question.keys());
+// this will output:
+// MapIterator {"question", 1, 2, 3, "correct", …}
+
+// console.log(question.values());
+// this will output:
+// MapIterator {"What is the best programming language in the world?", "C", "Java", "JavaScript", 3, …}
+// [[Entries]]
+// 0: "What is the best programming language in the world?"
+// 1: "C"
+// 2: "Java"
+// 3: "JavaScript"
+// 4: 3
+// 5: "Correct!"
+// 6: "Try again!"
+// __proto__: Map Iterator
+// [[IteratorHasMore]]: true
+// [[IteratorIndex]]: 0
+// [[IteratorKind]]: "values"
+
 // ---------SETS-------------
 const orderSet = new Set([
   'Pasta',
@@ -71,6 +164,7 @@ const orderSet = new Set([
   'Pasta',
   'Pizza',
 ]);
+
 // console.log(orderSet);
 // this will output:
 // Set(3) // size of 3
@@ -236,7 +330,7 @@ rest.set(document.querySelector('h1'), 'Heading');
 // LOOPING OBJECTS
 // propety names
 
-const properties = Object.keys[openingHours];
+// const properties = Object.keys[openingHours];
 // console.log(properties);
 // this will output:
 // (3) ['thu', 'fri', 'sat']
@@ -244,10 +338,10 @@ const properties = Object.keys[openingHours];
 // this will output:
 // We are open on 3 days.
 
-let openStr = `We are open on ${properties.length} days:`;
-for (const day of properties) {
-  openStr += `${day}, `;
-}
+// let openStr = `We are open on ${properties.length} days:`;
+// for (const day of properties) {
+// openStr += `${day}, `;
+// }
 // console.log(openStr);
 // this will output:
 // We are open on 3 days: thu, fri, sat
@@ -262,7 +356,7 @@ for (const day of properties) {
 // }
 
 // Property Values
-const values = Object.values(openingHours);
+// const values = Object.values(openingHours);
 // console.log(values);
 // This will output:
 // (3) [{...}, {...}, {...}]
@@ -271,7 +365,7 @@ const values = Object.values(openingHours);
 // Entire Object
 // Object.entries(openingHours);
 // OR
-const entries = Object.entries(openingHours);
+// const entries = Object.entries(openingHours);
 // console.log(entries);
 // this will output:
 // (3) [Array(2), Array(2), Array(2)]
@@ -285,13 +379,13 @@ const entries = Object.entries(openingHours);
 // will output: KEY is not defined.
 
 // INSTEAD DO with destructuring.......
-for (const [key, { open, close }] of entries) {
-  console.log(`On ${key} we open at ${open} and close at ${close}.`);
-  // this will output:
-  // On thu we open at 12 and close at 22
-  // On fri we open at 11 and close at 23
-  // On sat we open at 0 and close at 24
-}
+// for (const [key, { open, close }] of entries) {
+//   console.log(`On ${key} we open at ${open} and close at ${close}.`);
+// this will output:
+// On thu we open at 12 and close at 22
+// On fri we open at 11 and close at 23
+// On sat we open at 0 and close at 24
+// }
 // }
 // console.log(restaurant.openingHours.mon);
 // this will output undefined
@@ -311,14 +405,14 @@ if (restaurant.openingHours && restaurant.openingHours.mon)
   // the above is saying if the property before the ? exits than it will run the statement, if it doesn't exits
   // the output will be: undefined
 
-  console.log(restaurant.openingHours?.mon?.open);
-// the above says if opeiningHours doesn't exist then stop running and don't go to mon, if it does exist check if monday exists next.
+  // console.log(restaurant.openingHours?.mon?.open);
+  // the above says if opeiningHours doesn't exist then stop running and don't go to mon, if it does exist check if monday exists next.
 
-// Example
+  // Example
 
-const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+  // const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 
-for (const day of days) {
+  // for (const day of days) {
   // console.log(day);
   // this will output:
   // mon
@@ -352,7 +446,7 @@ for (const day of days) {
   // On sat, we open at closed. // here we have an error because the restaurant is open on sat but it is listed at 0 which is a falsy value so it is saying it is closed.
   // On sun, we open at closed.
   // TO FIX ABOVE ERROR ON SAT
-  const open = restaurant.openingHours[day]?.open ?? 'closed';
+  // const open = restaurant.openingHours[day]?.open ?? 'closed';
   // use the ?? instead of || because we need the 0 on saturday to be a truthy value.
   // console.log(`On ${day}, we open at ${open}.`);
   // the output will be the same as above example only now sat will read like this:
@@ -362,23 +456,23 @@ for (const day of days) {
   // console.log(restaurant.openingHours.fri.open);
   // this will output: 11 because fri exists and has an opening time.
   // }
-}
+  // }
 
-// OPTIONAL CHANING ON METHODS!
-// console.log(restaurant.order?.(0, 1) ?? 'Method does not exist.');
-// the output will be:
-// (2) ["Focaccia", "Pasta"]
+  // OPTIONAL CHANING ON METHODS!
+  // console.log(restaurant.order?.(0, 1) ?? 'Method does not exist.');
+  // the output will be:
+  // (2) ["Focaccia", "Pasta"]
 
-// console.log(restaurant.orderRisotto?.(0, 1) ?? 'Method does not exist.');
-// this will output:
-// Method does not exist. because there is no orderRisotto method created previously
+  // console.log(restaurant.orderRisotto?.(0, 1) ?? 'Method does not exist.');
+  // this will output:
+  // Method does not exist. because there is no orderRisotto method created previously
 
-// Optional CHAINGING ON ARRAYS
-const users = [{ name: 'Sherre', email: 'sherre.ahlers@gmail.com' }];
-console.log(users[0]?.name ?? 'User array empty.');
-// this will output: Sherre because there is a name in the users array, if there wasn't it would output 'User array empty.'
+  // Optional CHAINGING ON ARRAYS
+  // const users = [{ name: 'Sherre', email: 'sherre.ahlers@gmail.com' }];
+  // console.log(users[0]?.name ?? 'User array empty.');
+  // this will output: Sherre because there is a name in the users array, if there wasn't it would output 'User array empty.'
 
-restaurant.numGuests = 0;
+  restaurant.numGuests = 0;
 const guests3 = restaurant.numGuests || 10;
 // console.log(guests3);
 // output will be:
@@ -820,3 +914,308 @@ const openingHours1 = {
 // {thurs: {…}, fri: {…}, sat: {…}}
 // console.log(weekdays1);
 // this will output all values in array of weekdays1
+
+// WORKING WITH STRINGS AND METHODS
+const airline = 'TAP Air Portugal';
+const plane = 'A320';
+
+// console.log(plane[0]);
+
+// this will output: A  because it is the first index of 0 in the string.
+
+// console.log('B737'[0]);
+
+// this will output: B   -- because the first index of 0 on 'B737' is B
+
+// console.log(airline.length);
+
+// this will output:  16  -- becaue there are 16 elements in the string
+
+// console.log('B737'.length);
+// this will output: 4 -- because there are 4 elements in the string
+
+// console.log(airline.indexOf('r'));
+
+// this will output:  6  -- because 'r' is at index 6 starting at 0
+
+// console.log(airline.lastIndexOf('r'));
+
+// this will output:  10  -- because that is the last index with the r.
+
+// console.log(airline.indexOf('portugal'));
+
+// this will output:  -1  -- because there is no 'portugal in the string so it is -1
+
+// console.log(airline.slice(4));
+
+// this will output:  Air Portugal  -- because
+// 'TAP Air Portugal' we sliced at position 4 so the remaining string is 'Air Portugal' which is called a sub string  -- doesn't change the original string  -- if we wanted to use substring must add it to a variable
+
+// console.log(airline.slice(4, 7));
+
+// this will output:  Air
+// this will start at index 4 and end before index 7
+
+// console.log(airline.slice(0, airline.indexOf(' ')));
+
+// this will output: TAP
+// because above we started at index 0 and ended at the index of the space ' '.
+
+// console.log(airline.lastIndexOf(' '));
+
+// this will output: 7  -- because the last occurance of a space in the string 'TAP Air Portugal' is index 7
+
+// console.log(airline.slice(-2));
+
+// this will output: al   because it is at the 2nd to last index in the string
+
+// console.log(airline.slice(1, -1));
+
+// this will output: AP Air Portuga
+// because we are starting at index 1 and ending right before the last character in the string.
+
+const checkMiddleSeat = function (seat) {
+  // B and E are middle seat on small plane
+  const s = seat.slice(-1);
+  if (s === 'B' || s === 'E') {
+    // console.log('You got the middle seat :(');
+  } else {
+    // console.log('You got lucky! :)');
+  }
+};
+
+checkMiddleSeat('11B');
+// this will output: You got the middle seat :(
+
+checkMiddleSeat('23C');
+// this will output: You got lucky! :)
+
+checkMiddleSeat('3E');
+// this will output: You got the middle seat :(
+
+// Whenever we call a method on a string JS will automatically convert the string primative to a string object with the same content. Referred to as Boxing.
+
+// console.log(new String('sherre'));
+// this will output:
+// String {"sherre"}
+// 0: "s"
+// 1: "h"
+// 2: "e"
+// 3: "r"
+// 4: "r"
+// 5: "e"
+// length: 6
+
+// the above is what JavaScript does behind the scenes with using strings and methods on those strings
+
+// MORE WITH STRINGS
+// const airline = 'TAP Air Portugal';
+
+// console.log(airline.toLocaleLowerCase());
+// this will output: tap air portugal
+
+// console.log(airline.toUpperCase());
+// this will output: TAP AIR PORTUGAL
+
+// FIX CAPITALIZATION IN A NAME
+const passenger = 'jOnAS';
+const passengerLower = passenger.toLowerCase();
+const passengerCorrect =
+  passengerLower[0].toUpperCase() + passengerLower.slice(1);
+
+// console.log(passengerCorrect);
+// this will output: Jonas  -- because first we lower case all the letters and the uppercase the first letter to make it correct.
+
+// COMPARING EMAILS
+const email = 'hello@jonas.io';
+const loginEmail = ' Hello@Jonas.Io \n';
+
+const lowerEmail = loginEmail.toLowerCase();
+// this takes the loginEmail and lowecases everything
+const trimmedEmail = lowerEmail.trim();
+// this takes the all lowercased email and removes all white space
+
+// console.log(trimmedEmail);
+// this will output:  hello@jonas.io  because I made everything lowercase, then I trimmed the email
+
+const normalizedEmail = loginEmail.toLowerCase().trim();
+// console.log(normalizedEmail);
+// this will output: hello@jonas.io -- because I have all in one step first lowercased the email, then trimmed it of its white space
+
+// console.log(email === normalizedEmail);
+// this will output: true
+
+// HOW TO REPLACE PARTS OF A STRING
+// 'TAP Air Portugal'
+const priceGB = '288,97E';
+// const priceUS = priceGB.replace('E', '$')
+
+// console.log(priceUs);
+// this will output:  288,97$  -- because we replaced the 'E' with the '$'
+
+const priceUS = priceGB.replace('E', '$').replace(',', '.');
+// console.log(priceUS);
+// this will output: 288.97$  -- because I replaced the 'E' with '$' and then I replaced the ',' with '.'
+
+const announcement =
+  'All passengers come to boarding door 23. Boarding door 23!';
+// console.log(announcement.replace('door', 'gate'));
+// this will output:
+// All passengers come to boarding gate 23. Boarding door 23!
+// BUT IT ONLY CHANGED THE FIRST OCCURANCE
+
+// REGULAR EXPRESSION
+// to tell replace method to target all occurances of door instead of just first one.
+
+// console.log(announcement.replace(/door/g, 'gate'));
+// this will output:
+// All passengers come to boarding gate 23. Boarding gate 23!
+
+// 3 METHODS THAT RETURN BOOLEANS
+const plane1 = 'A320neo';
+// console.log(plane1.includes('A320'));
+// this will output: true
+
+// console.log(plane1.includes('Boeing'));
+// this will output: false
+
+// console.log(plane1.startsWith('Air'));
+// this will output: false
+
+const plane2 = 'Airbus A320neo';
+// console.log(plane2.startsWith('Air'));
+// this will output: true because it doesn't have to match the whole word just the letters its looking for.
+
+// console.log(plane2.startsWith('Airb'));
+// this will output: true
+
+if (plane2.startsWith('Airbus') && plane2.endsWith('neo')) {
+  // console.log('Part of the NEW Airbus family');
+  // this will output:
+  // Part of the NEW Arirbus family
+}
+
+// PRACTICE EXERCISE
+const checkBaggage = function (items) {
+  const baggage = items.toLowerCase();
+
+  if (baggage.includes('knife') || baggage.includes('gun')) {
+    // console.log('You are NOT allowed on board');
+  } else {
+    // console.log('Welcome aboard!');
+  }
+};
+
+checkBaggage('I have a laptop, some Food and a pocket Knife.');
+// this will output:
+// You are NOT allowed on board
+
+checkBaggage('I have some socks and a camera.');
+// this will output:
+// Welcome aboard!
+
+checkBaggage('Got some snacks and a gun for protection.');
+// this will output:
+// You are NOT allowed on board
+
+// MORE STRINGS!!!
+
+// ONE OF MOST USED STRING METHODS = SPLIT
+// console.log('a+very+nice+string'.split('+'));
+// this will output:
+// (4) ["a", "very", "nice", "string"]
+
+// console.log('Jonas Schmedtmann'.split(' '));
+// this will output:
+// (2) ["Jonas", "Schmedtmann"]
+
+// NOW CAN USE DESTRUCTURING
+const [firstName, lastName] = 'Jonas Scmedtmann'.split(' ');
+// this will create an array of two elements being seperated at the space
+// will put the first part of split into firstName, and the last part into lastName
+
+const newName = ['Mr.', firstName, lastName.toUpperCase()].join(' ');
+// console.log(newName);
+// this will output:
+// Mr. Jonas SCMEDTMANN
+// because this will take each individual element and joining them together and then joining them with a space
+
+const capitalizeName = function (name) {
+  const names = name.split(' ');
+  // this will be an array
+  const namesUpper = [];
+  //now we can loop over array
+  for (const n of names) {
+    // n[0].toUpperCase() + n.slice(1)
+    // this will uppercase the 0 index and then take out all rest of elements in name into a new array
+    namesUpper.push(n[0].toUpperCase() + n.slice(1));
+    // OR
+    // namesUpper.push(n.replace(n[0], n[0].toUpperCase()))
+    // the above will give us same result as line 1151 would
+  }
+  // console.log(namesUpper.join(' '));
+};
+
+capitalizeName('jessica ann smith davis');
+// this will output: Jessica Ann Smith Davis
+// because first we split all elements into their own array but splitting every word at the space
+// then we pushed the first capitalized letter of each word into the namesUpper array and pushed the rest of the names starting after position 1 into th namesUpper array and then we joined all the words in namesUpper into one array with each word seperated with a space.
+
+capitalizeName('jonas schmedtmann');
+// this will output: Jonas Schmedtmann
+
+// PADDING
+const message = 'Go to gate 23';
+// console.log(message.padStart(25, '+'));
+// the output will be:
+// ++++++++++++Go to gate 23  -- so the length of the string is 25
+// padStart allows me to add a character to the string, the first argument is the length of the pad, the second argument is what to pad with.
+
+// console.log(message.padStart(25, '+').padEnd(35, '+'));
+// this will output:
+// ++++++++++++Go to gate 23++++++++++
+
+// console.log('Jonas'.padStart(25, '+').padEnd(30, '+'));
+// this will output:
+// ++++++++++++++++++++Jonas+++++
+
+const maskCreditCard = function (number) {
+  // const str = String()
+  // OR
+  const str = number + '';
+  // when you use the + '' it will automatically convert into a string
+  const last = str.slice(-4);
+  // this will take the last 4 elements in the string
+  return last.padStart(str.length, '*');
+  // then we padded the rest of the string with the * instead of their original numbers
+};
+
+// console.log(maskCreditCard(64637836));
+// this will output: ****7836
+
+// console.log(maskCreditCard(43378463864647384));
+// this will output:  *************7384
+
+// console.log(maskCreditCard('334859493847755774747'));
+// this will output:  *****************4747
+
+// REPEAT METHOD
+const message4 = 'Bad weather... All Departures Delayed...';
+// console.log(message4.repeat(5));
+// this will output:
+// Bad weather... All Departures Delayed...Bad weather... All Departures Delayed...Bad weather... All Departures Delayed...Bad weather... All Departures Delayed...Bad weather... All Departures Delayed...
+
+const planesInLine = function (num) {
+  // console.log(`There are ${num} planes in line${'🧚🏼‍♀️'.repeat(num)}`);
+};
+planesInLine(5);
+// this will output:
+// There are 5 planes in line🧚🏼‍♀️🧚🏼‍♀️🧚🏼‍♀️🧚🏼‍♀️🧚🏼‍♀️
+
+planesInLine(3);
+// this will output:
+// There are 3 planes in line🧚🏼‍♀️🧚🏼‍♀️🧚🏼‍♀️
+
+planesInLine(12);
+// this will output:
+//

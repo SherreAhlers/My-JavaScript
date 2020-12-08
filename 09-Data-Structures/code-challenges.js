@@ -225,3 +225,224 @@ for (const [team, odd] of Object.entries(game.odds)) {
 // Odd of victory Bayern Munich: 1.33
 // Odd of draw: 3.25
 // Odd of victory Borrussia Dortmund: 6.5
+
+// CODING CHALLENGE # 3
+// Let's continue with our football betting app! This time, we have a map called 'gameEvents' (see below) with a log of the events that happened during the game. The values are the events themselves, and the keys are the minutes in which each event happened (a football game has 90 minutes plus some extra time).
+// Your tasks:
+// 1. Createanarray'events'ofthedifferentgameeventsthathappened(no duplicates)
+// 2. Afterthegamehasfinished,iswasfoundthattheyellowcardfromminute64 was unfair. So remove this event from the game events log.
+// 3. Computeandlogthefollowingstringtotheconsole:"Aneventhappened,on average, every 9 minutes" (keep in mind that a game has 90 minutes)
+// 4. Loopover'gameEvents'andlogeachelementtotheconsole,marking whether it's in the first half or second half (after 45 min) of the game, like this:
+// [FIRST HALF] 17: ⚽   GOAL GOOD LUCK 😀
+
+const gameEvents = new Map([
+  [17, 'GOAL'],
+  [36, 'Substitution'],
+  [47, 'GOAL'],
+  [61, 'Substitution'],
+  [64, 'Yellow card'],
+  [69, 'Red card'],
+  [70, 'Substitution'],
+  [72, 'Substitution'],
+  [76, 'GOAL'],
+  [80, 'GOAL'],
+  [92, 'Yellow card'],
+]);
+
+// 1.
+// console.log(gameEvents.values());
+// this will output:
+// MapIterator {"GOAL", "Substitution", "GOAL", "Substitution", "Yellow card", …}
+// [[Entries]]
+// 0: "GOAL"
+// 1: "Substitution"
+// 2: "GOAL"
+// 3: "Substitution"
+// 4: "Yellow card"
+// 5: "Red card"
+// 6: "Substitution"
+// 7: "Substitution"
+// 8: "GOAL"
+// 9: "GOAL"
+// 10: "Yellow card"
+// __proto__: Map Iterator
+// [[IteratorHasMore]]: true
+// [[IteratorIndex]]: 0
+// [[IteratorKind]]: "values"
+
+// const events = new Set(gameEvents.values());
+
+// console.log(events);
+// this will output:
+// Set(4) {"GOAL", "Substitution", "Yellow card", "Red card"}
+// [[Entries]]
+// 0: "GOAL"
+// 1: "Substitution"
+// 2: "Yellow card"
+// 3: "Red card"
+// size: (...)
+// __proto__: Set
+// add: ƒ add()
+// clear: ƒ clear()
+// constructor: ƒ Set()
+// delete: ƒ delete()
+// entries: ƒ entries()
+// forEach: ƒ forEach()
+// has: ƒ has()
+// keys: ƒ values()
+// size: (...)
+// values: ƒ values()
+// Symbol(Symbol.iterator): ƒ values()
+// Symbol(Symbol.toStringTag): "Set"
+// get size: ƒ size()
+// __proto__: Object
+// for (const [key, value] of gameEvents)
+
+// NOW CONVERT ABOVE INTO ARRAY:
+const events = [...new Set(gameEvents.values())];
+// console.log(events);
+// this will output:
+// (4) ["GOAL", "Substitution", "Yellow card", "Red card"]
+// 0: "GOAL"
+// 1: "Substitution"
+// 2: "Yellow card"
+// 3: "Red card"
+// length: 4
+// __proto__: Array(0)
+
+// 2.
+// delete an event that was deemed unfair...
+gameEvents.delete(64);
+
+// 3.
+// console.log(
+//   `An event happended, on average, every ${time1 / gameEvents.size} minutes.`
+// );
+// this will output:
+// An event happened, on average, every 9 minutes.
+
+// BONUS
+// const time1 = [...gameEvents.keys()];
+// console.log(time1);
+// this will output:
+// (10) [17, 36, 47, 61, 69, 70, 72, 76, 80, 92]
+const time1 = [...gameEvents.keys()].pop();
+// console.log(time1);
+// this will output:
+// 92 because 92 is the last element in the array which pop has now removed
+
+// 3.
+// console.log(
+// `An event happended, on average, every ${time1 / gameEvents.size} minutes.`
+// );
+// this will output:
+// An event happened, on average, every 9.2 minutes
+
+// 4.
+// loop through map
+for (const [min, event] of gameEvents) {
+  const half = min <= 45 ? 'FIRST' : 'SECOND';
+  // console.log(`[${half} HALF] ${min}: ${event}.`);
+  // this will output:
+  // [FIRST HALF] 17: GOAL.
+  // [FIRST HALF] 36: Substitution.
+  // [SECOND HALF] 47: GOAL.
+  // [SECOND HALF] 61: Substitution.
+  // [SECOND HALF] 69: Red card.
+  // [SECOND HALF] 70: Substitution.
+  // [SECOND HALF] 72: Substitution.
+  // [SECOND HALF] 76: GOAL.
+  // [SECOND HALF] 80: GOAL.
+  // [SECOND HALF] 92: Yellow card.
+}
+
+/*
+CODING CHALLENGE # 4
+
+Write a program that receives a list of variable names written in underscore_case and convert them to camelCase.
+The input will come from a textarea inserted into the DOM (see code below to insert the elements), and conversion will happen when the button is pressed.
+Test data (pasted to textarea, including spaces):
+underscore_case
+ first_name
+Some_Variable
+  calculate_AGE
+delayed_departure
+
+Should produce this output (5 separate console.log outputs): 
+underscoreCase ✅
+firstName ✅✅
+someVariable ✅✅✅
+calculateAge ✅✅✅✅
+delayedDeparture ✅✅✅✅✅
+
+Hints:
+§ Remember which character defines a new line in the textarea 😉
+§ The solution only needs to work for a variable made out of 2 words, like a_b
+§ Start without worrying about the ✅. Tackle that only after you have the variable
+name conversion working 😉
+§ This challenge is difficult on purpose, so start watching the solution in case
+you're stuck. Then pause and continue!
+Afterwards, test with your own test data! GOOD LUCK 😀
+*/
+
+document.body.append(document.createElement('textarea'));
+document.body.append(document.createElement('button'));
+
+document.querySelector('button').addEventListener('click', function () {
+  const text = document.querySelector('textarea').value;
+  const rows = text.split('\n');
+
+  // console.log(rows);
+  // this will output:
+  // (5) ["underscore_case", "first_name", "Some_Variable", "calculate_Age", "delayed_departure"]
+  // 0: "underscore_case"
+  // 1: "first_name"
+  // 2: "Some_Variable"
+  // 3: "calculate_Age"
+  // 4: "delayed_departure"
+  // length: 5
+
+  // console.log(text);
+  // this will output:
+  // underscore_case
+  // first_name
+  // Some_Variable
+  // calculate_Age
+  // delayed_departure
+
+  for (const [i, row] of rows.entries()) {
+    const [first, second] = row.toLowerCase().trim().split('_');
+    // console.log(row, first, second);
+
+    const output = `${first}${second.replace(
+      second[0],
+      second[0].toUpperCase()
+    )}`;
+
+    // console.log(output);
+
+    // this will output:
+    // underscoreCase
+    // firstName
+    // someVariable
+    // calculateAge
+    // delayedDepartures
+
+    // console.log(`${output.padEnd(20)}✅`);
+
+    // the output will be:
+    // underscoreCase ✅
+    // firstName ✅
+    // someVariable ✅
+    // calculateAge ✅
+    // delayedDepartures ✅
+
+    // console.log(`${output.padEnd(20)}${'✅'.repeat(i + 1)}`);
+    // this will output:
+    // underscoreCase ✅
+    // firstName ✅✅
+    // someVariable ✅✅✅
+    // calculateAge ✅✅✅✅
+    // delayedDeparture ✅✅✅✅✅
+  }
+});
