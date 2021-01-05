@@ -370,4 +370,140 @@ const addVAT2 = addTaxRate(0.23);
 // addVAT2(0.23)(100);
 // console.log(addVAT2);
 
+// IMMEDIATELY INVOKED FUNCTION EXPRESSIONS
+// (IIFE) -- not widely used anymore.
+
+// run once and never get called again
+// write function itself without assigning it to a variable
+// (function() {
+// console.log('This will never run again.');
+// })();
+// by wrapping the above function in parenthesis it will make it a function expression
+// the end parenthesis is how you immidiately call the function.
+// all data defined in the above code scope is hidden from all other scopes
+
+// also works for arrow functions
+// (() => console.log('This will ALSO never run again.'))();
+// again we call the function immidiatly at the end of the expression with parenthesis.
+
 // Closures - complex mechanism
+// hardest to understand
+const secureBooking = function() {
+    // this function will create the closure
+    // closure is not a feature we explicitly used - we do not create closure like we do arrays.
+    let passsengerCount = 0;
+    // this starts at 0 but we are able to manipulate it.
+
+    return function() {
+        passsengerCount++;
+        // here I am updating the passenger count variable with each use.
+        // console.log(`${passsengerCount} passengers`);
+    };
+};
+
+// global scope contains secureBooking
+// secureBooking() has a variable environment of passengerCount = 0;
+// a new function is returned and will be stored in booker variable.
+// secureBooking has done job and finished execution so now it is gone.
+const booker = secureBooking();
+// booker will now be a function
+
+booker();
+// it doesn't need arguments because it has no parameters.
+// this will output: 1 passengers
+booker();
+// this will output: 2 passengers
+booker();
+// this will output: 3 passengers
+// what makes it keep counting passengers is the fact that there is a closure.
+
+// booker() is globally scoped so it still has access to variables that existed when it was created.
+
+// closure - how it works
+// a new execution context is created an put at the top of the call stack - the context is empty because there are no parameters
+//---------IMPORTANT!!------------------
+// any function always has access to variable environment of execution context in which function was created
+// in case of booker() it was created in the execution context of secure booking.
+// therefore booker function will get access to this variable environment which contains the passengerCount variable - its this connection we call closure.
+// CLOSURE - Variable environment attached to the function, exactly as it was at the time and place the function was created.
+// closure has priority over the scope chain.
+
+// console.dir(booker);
+// ƒ anonymous()
+// arguments: (...)
+// caller: (...)
+// length: 0
+// name: ""
+// prototype: {constructor: ƒ}
+// __proto__: ƒ ()
+// [[FunctionLocation]]: script.js:397
+// [[Scopes]]: Scopes[3]
+// 0: Closure (secureBooking) {passsengerCount: 3}
+// 1: Script {bookings: Array(5), flight: "LH234", sherre: {…}, createBooking: ƒ, checkIn: ƒ, …}
+// 2: Global {window: Window, self: Window, document: document, name: "", location: Location, …}
+
+// this part is variable environment of secureBooking function
+
+// CLOSURE EXAMPLES
+let f;
+// f is defined in global scope
+const g = function() {
+    // he we assign g a function which inculdes the a variable
+    const a = 23;
+    // variable environment goes away
+    f = function() {
+        // here we assign f a function
+        // console.log(a * 2);
+    };
+};
+
+const h = function() {
+    const b = 777;
+    f = function() {
+        // console.log(b * 2);
+    };
+};
+
+g();
+f();
+// the above will output: 46
+
+// Re-assinging f function
+h();
+f();
+// the h() and f() will output: 1554 after they run which is 777*2
+
+// console.dir(f);
+
+// this will output:
+// f f()
+// arguments: (...)
+// caller: (...)
+// length: 0
+// name: "f"
+// prototype: {constructor: ƒ}
+// __proto__: ƒ ()
+// [[FunctionLocation]]: script.js:462
+// [[Scopes]]: Scopes[3]
+// 0: Closure (h) {b: 777}
+// 1: Script {bookings: Array(5), flight: "LH234", sherre: {…}, createBooking: ƒ, checkIn: ƒ, …}
+// 2: Global {window: Window, self: Window, document: document, name: "", location: Location, …}
+
+// EXAMPLE @
+const boardPassengers = function(num, wait) {
+    const perGroup = num / 3;
+
+    setTimeout(function() {
+        // console.log(`We are now boarding all ${num} passengers`);
+        //this will output: We are now boarding all 180 passengers
+        // console.log(`There are 3 groups, each with ${perGroup} passengers.`);
+    }, wait * 1000);
+    // whatever code is inside function parameter above will timeout after 1000 (1 second)
+    // this will output: There are 3 groups, each with 60 passengers.
+    // console.log(`Will start boarding in ${wait} seconds.`);
+    // this will output: Will start boarding in 3 seconds.
+};
+
+const perGroup = 1000;
+// this does not get used because it is out of scope -- will run perGroup on line 494 because that was the locally scoped variable.
+boardPassengers(180, 3);
