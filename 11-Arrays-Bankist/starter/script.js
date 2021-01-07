@@ -4,31 +4,31 @@
 
 // Data
 const account1 = {
-    owner: 'Jonas Schmedtmann',
-    movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
-    interestRate: 1.2, // %
-    pin: 1111,
+  owner: 'Jonas Schmedtmann',
+  movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
+  interestRate: 1.2, // %
+  pin: 1111,
 };
 
 const account2 = {
-    owner: 'Jessica Davis',
-    movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
-    interestRate: 1.5,
-    pin: 2222,
+  owner: 'Jessica Davis',
+  movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
+  interestRate: 1.5,
+  pin: 2222,
 };
 
 const account3 = {
-    owner: 'Steven Thomas Williams',
-    movements: [200, -200, 340, -300, -20, 50, 400, -460],
-    interestRate: 0.7,
-    pin: 3333,
+  owner: 'Steven Thomas Williams',
+  movements: [200, -200, 340, -300, -20, 50, 400, -460],
+  interestRate: 0.7,
+  pin: 3333,
 };
 
 const account4 = {
-    owner: 'Sarah Smith',
-    movements: [430, 1000, 700, 50, 90],
-    interestRate: 1,
-    pin: 4444,
+  owner: 'Sarah Smith',
+  movements: [430, 1000, 700, 50, 90],
+  interestRate: 1,
+  pin: 4444,
 };
 
 const accounts = [account1, account2, account3, account4];
@@ -59,61 +59,69 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMovements = function(movements) {
-    // this function will recieve on array of movements to work with
-    containerMovements.innerHTML = '';
-    // this empties the container and only allows new data to be added.
-    // innerHTML will return all html tags
-    // here we are using innerHTML as a setter.
+const displayMovements = function (movements) {
+  // this function will recieve on array of movements to work with
+  containerMovements.innerHTML = '';
+  // this empties the container and only allows new data to be added.
+  // innerHTML will return all html tags
+  // here we are using innerHTML as a setter.
 
-    // textContent will return the text itself
-    movements.forEach(function(mov, i) {
-        // this starts with first movement on top and the rest shown underneath the previous
-        const type = mov > 0 ? 'deposit' : 'withdrawal';
-        const html = `
+  // textContent will return the text itself
+  movements.forEach(function (mov, i) {
+    // this starts with first movement on top and the rest shown underneath the previous
+    const type = mov > 0 ? 'deposit' : 'withdrawal';
+    const html = `
         <div class="movements__row">
           <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
-          <div class="movements__value">${mov}</div>
+          <div class="movements__value">${mov}€</div>
         </div>
         `;
 
-        containerMovements.insertAdjacentHTML('afterbegin', html);
-        // this method takes two strings
-        // look at MDN docs for javaScript afterbegin is a particular position name of where the element should be places.
-    });
+    containerMovements.insertAdjacentHTML('afterbegin', html);
+    // this method takes two strings
+    // look at MDN docs for javaScript afterbegin is a particular position name of where the element should be places.
+  });
 };
 
-displayMovements(account1.movements);
-
-const calcDisplayBalance = function(movements) {
-    const balance = movements.reduce((acc, mov) => acc + mov, 0);
-    labelBalance.textContent = `${balance} EUR`;
+const calcDisplayBalance = function (movements) {
+  const balance = movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${balance}€`;
 };
-calcDisplayBalance(account1.movements);
 
-const createUsernames = function(accounts) {
-    accounts.forEach(function(account) {
-        account.username = account.owner
-            // the name of user comes from account array key owner value - name
-            .toLowerCase()
-            .split(' ')
-            .map(name => name[0])
-            .join('');
-        // this created an array of only initials of account holders
-    });
+const calcDisplaySummary = function (acc) {
+  const incomes = acc.movements
+    .filter(mov => mov > 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumIn.textContent = `${incomes}€`;
 
-    // const username = user
-    //     .toLowerCase()
-    //     .split(' ')
-    //     // .map(function(name) {
-    //     //     return name[0];
-    //     // });
-    //     // OR LIKE THIS
-    //     .map(name => name[0])
-    //     .join('');
-    // return username;
+  const out = acc.movements
+    .filter(mov => mov < 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumOut.textContent = `${Math.abs(out)}€`;
+
+  const interest = acc.movements
+    .filter(mov => mov > 0)
+    .map(deposit => (deposit * acc.interestRate) / 100)
+    .filter((int, i, arr) => {
+      // console.log(arr);
+      return int >= 1;
+    })
+    .reduce((acc, int) => acc + int, 0);
+  labelSumInterest.textContent = `${interest}€`;
+};
+
+const createUsernames = function (accounts) {
+  accounts.forEach(function (account) {
+    account.username = account.owner
+      // the name of user comes from account array key owner value - name
+      .toLowerCase()
+      .split(' ')
+      .map(name => name[0])
+      .join('');
+    // this created an array of only initials of account holders
+  });
 };
 createUsernames(accounts);
 // console.log(accounts);
@@ -125,6 +133,41 @@ createUsernames(accounts);
 
 // console.log(createUsernames('Steven Thomas Williams'));
 // this will output: stw
+
+// EVENT HANDLER
+let currentAccount;
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault();
+  // this will prevent form from reloading
+  currentAccount = accounts.find(
+    acc => acc.username === inputLoginUsername.value
+    // find will return undefined if cannot find condition
+  );
+  //   console.log(currentAccount);
+  // once type login info
+  // this will output:
+  // {owner: "Jonas Schmedtmann", movements: Array(8), interestRate: 1.2, pin: 1111, username: "js"}
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    // the question mark means optional chaining - pin property will only be read if currentAccount exists
+    // console.log('LOGIN');
+
+    // Display UI and message
+    labelWelcome.textContent = `Welcome back ${
+      currentAccount.owner.split(' ')[0]
+    }`;
+    containerApp.style.opacity = 100;
+
+    // CLEAR INPUT FIELDS
+    inputLoginUsername.value = inputLoginPin.value = '';
+    inputLoginPin.blur();
+    // Display movements
+    displayMovements(currentAccount.movements);
+    // Display balance
+    calcDisplayBalance(currentAccount.movements);
+    // Display summary
+    calcDisplaySummary(currentAccount);
+  }
+});
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -234,20 +277,20 @@ const letters = arr.concat(arr2);
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 // the positive values are deposits and the negative values are withdraws
 for (const movement of movements) {
-    if (movement > 0) {
-        // console.log(`You deposited ${movement}`);
-    } else {
-        // console.log(`You withdrew ${Math.abs(movement)}`);
-        // the Math.abs means to take the absolute value (removing the negative sign)
-    }
-    // this will output:
-    // You deposited 200
-    // You deposited 450
-    // You withdrew 400
-    // You deposited 3000
-    // You withdrew 650
-    // You withdrew 130
-    // You deposited 70
+  if (movement > 0) {
+    // console.log(`You deposited ${movement}`);
+  } else {
+    // console.log(`You withdrew ${Math.abs(movement)}`);
+    // the Math.abs means to take the absolute value (removing the negative sign)
+  }
+  // this will output:
+  // You deposited 200
+  // You deposited 450
+  // You withdrew 400
+  // You deposited 3000
+  // You withdrew 650
+  // You withdrew 130
+  // You deposited 70
 }
 // ------OR LIKE THIS!!-----
 // console.log('============================');
@@ -270,35 +313,35 @@ for (const movement of movements) {
 // });
 
 for (const [i, movement] of movements.entries())
-    if (movement > 0) {
-        // console.log(`Movement ${i + 1}: You deposited ${movement}`);
-    } else {
-        // console.log(`Movement ${i + 1}: You withdrew ${Math.abs(movement)}`);
-    }
-    // this will output:
-    // Movement 1: You deposited 200
-    // Movement 2: You deposited 450
-    // Movement 3: You withdrew 400
-    // Movement 4: You deposited 3000
-    // Movement 5: You withdrew 650
-    // Movement 6: You withdrew 130
-    // Movement 7: You deposited 70
-    // Movement 8: You deposited 1300
+  if (movement > 0) {
+    // console.log(`Movement ${i + 1}: You deposited ${movement}`);
+  } else {
+    // console.log(`Movement ${i + 1}: You withdrew ${Math.abs(movement)}`);
+  }
+// this will output:
+// Movement 1: You deposited 200
+// Movement 2: You deposited 450
+// Movement 3: You withdrew 400
+// Movement 4: You deposited 3000
+// Movement 5: You withdrew 650
+// Movement 6: You withdrew 130
+// Movement 7: You deposited 70
+// Movement 8: You deposited 1300
 
-movements.forEach(function(mov, i, arr) {
-    if (mov > 0) {
-        // console.log(`Movement ${i + 1}: You deposited ${mov}`);
-    } else {
-        // console.log(`Movement ${i + 1}: You withdrew ${Math.abs(mov)}`);
-    }
-    // this will output:
-    // You deposited 200
-    // You deposited 450
-    // You withdrew 400
-    // You deposited 3000
-    // You withdrew 650
-    // You withdrew 130
-    // You deposited 70
+movements.forEach(function (mov, i, arr) {
+  if (mov > 0) {
+    // console.log(`Movement ${i + 1}: You deposited ${mov}`);
+  } else {
+    // console.log(`Movement ${i + 1}: You withdrew ${Math.abs(mov)}`);
+  }
+  // this will output:
+  // You deposited 200
+  // You deposited 450
+  // You withdrew 400
+  // You deposited 3000
+  // You withdrew 650
+  // You withdrew 130
+  // You deposited 70
 });
 
 // YOU CANNOT USE CONTINUE OR BREAK STATEMENTS WITH forEach method.
@@ -306,17 +349,17 @@ movements.forEach(function(mov, i, arr) {
 // ----forEach() with Maps and Sets------
 // --------Map---------------
 const currencies = new Map([
-    ['USD', 'United States dollar'],
-    ['EUR', 'Euro'],
-    ['GBP', 'Pound sterling'],
+  ['USD', 'United States dollar'],
+  ['EUR', 'Euro'],
+  ['GBP', 'Pound sterling'],
 ]);
 // in this array of arrays each of the array elements will be one entry of the map where the first element will be the key and the second element will be the value
-currencies.forEach(function(value, key, map) {
-    // console.log(`${key}: ${value}`);
-    // this will output:
-    // USD: United States dollar
-    // EUR: Euro
-    // GBP: Pound sterling
+currencies.forEach(function (value, key, map) {
+  // console.log(`${key}: ${value}`);
+  // this will output:
+  // USD: United States dollar
+  // EUR: Euro
+  // GBP: Pound sterling
 });
 
 // ---------SET-----------
@@ -326,15 +369,15 @@ const currenciesUnique = new Set(['USD', 'GBP', 'USD', 'EUR', 'EUR']);
 // Set(3) {"USD", "GBP", "EUR"}
 
 // currenciesUnique.forEach(function(value, key, map) {
-currenciesUnique.forEach(function(value, _, map) {
-    // console.log(`${key}: ${value}`);
-    // this will output:
-    // USD: USD
-    // GBP: GBP
-    // EUR: EUR
-    // the key is the same as the value
-    // this is because sets do not have a keys or indexes so there is no value that would make sense for key
-    // instead of making key a parameter just use  _ (it is a default setting for javascript)
+currenciesUnique.forEach(function (value, _, map) {
+  // console.log(`${key}: ${value}`);
+  // this will output:
+  // USD: USD
+  // GBP: GBP
+  // EUR: EUR
+  // the key is the same as the value
+  // this is because sets do not have a keys or indexes so there is no value that would make sense for key
+  // instead of making key a parameter just use  _ (it is a default setting for javascript)
 });
 
 // converting a euro to dollar
@@ -367,7 +410,7 @@ for (const mov of movements) movementsUSDfor.push(mov * euroToUSD);
 // // (8) [220.00000000000003, 495.00000000000006, -440.00000000000006, 3300.0000000000005, -715.0000000000001, -143, 77, 1430.0000000000002]
 
 const movementsDescriptions = movements.map(
-    (mov, i) =>
+  (mov, i) =>
     `Movement ${i + 1}: You ${mov > 0 ? 'deposited' : 'withdrew'} ${Math.abs(
       mov
     )}`
@@ -384,10 +427,10 @@ const movementsDescriptions = movements.map(
 
 // FILTER METHOD
 
-const deposits = movements.filter(function(mov) {
-    // with filter all we need is current element not index, key etc.
-    return mov > 0;
-    // this says only positive values (deposits) will be in array
+const deposits = movements.filter(function (mov) {
+  // with filter all we need is current element not index, key etc.
+  return mov > 0;
+  // this says only positive values (deposits) will be in array
 });
 // console.log(movements);
 // this will output:
@@ -410,31 +453,30 @@ const deposits = movements.filter(function(mov) {
 // 4: 1300
 
 const depositsFor = [];
-for (const mov of movements)
-    if (mov > 0) depositsFor.push(mov);
-    // console.log(depositsFor);
-    // this will output:
-    // (5) [200, 450, 3000, 70, 1300]
-    // 0: 200
-    // 1: 450
-    // 2: 3000
-    // 3: 70
-    // 4: 1300
+for (const mov of movements) if (mov > 0) depositsFor.push(mov);
+// console.log(depositsFor);
+// this will output:
+// (5) [200, 450, 3000, 70, 1300]
+// 0: 200
+// 1: 450
+// 2: 3000
+// 3: 70
+// 4: 1300
 
-    //     const withdrawals = movements.filter(function(mov) {
-    //         return mov < 0;
-    //     });
+//     const withdrawals = movements.filter(function(mov) {
+//         return mov < 0;
+//     });
 
-    // const withdrawalsFor = [];
-    // for (const mov of movements)
-    //     if (mov < 0) withdrawalsFor.push(mov);
-    // console.log(withdrawalsFor);
-    // this will output:
-    // (3) [-400, -650, -130]
-    // 0: -400
-    // 1: -650
-    // 2: -130
-    // OR LIKE THIS
+// const withdrawalsFor = [];
+// for (const mov of movements)
+//     if (mov < 0) withdrawalsFor.push(mov);
+// console.log(withdrawalsFor);
+// this will output:
+// (3) [-400, -650, -130]
+// 0: -400
+// 1: -650
+// 2: -130
+// OR LIKE THIS
 const withdrawals = movements.filter(mov => mov < 0);
 // console.log(withdrawals);
 // this will output:
@@ -451,13 +493,13 @@ const withdrawals = movements.filter(mov => mov < 0);
 // console.log(balance2);
 
 // function expression version
-const balance = movements.reduce(function(acc, cur, i, arr) {
-    // first parameter is called the accumultor
-    // this will add all elements of array together to give sum which is what will be output.
-    // console.log(`Iteration ${i}: ${acc}`);
-    return acc + cur;
-    // accumulator will be current sum of all values before it
-    // each loop iteration we return the updated accumulator
+const balance = movements.reduce(function (acc, cur, i, arr) {
+  // first parameter is called the accumultor
+  // this will add all elements of array together to give sum which is what will be output.
+  // console.log(`Iteration ${i}: ${acc}`);
+  return acc + cur;
+  // accumulator will be current sum of all values before it
+  // each loop iteration we return the updated accumulator
 }, 0);
 // the above says we want to start adding from position 0
 // console.log(balance);
@@ -479,24 +521,62 @@ for (const mov of movements) balance2 += mov;
 
 // Get Maximum value of movements array
 const max = movements.reduce((acc, mov) => {
-    // acc here will represent current max number
-    if (acc > mov) return acc;
-    else return mov;
+  // acc here will represent current max number
+  if (acc > mov) return acc;
+  else return mov;
 }, movements[0]);
 // console.log(max);
 // this will output: 3000  -- because that is the highest positive number in the array
 
 // PIPELINE of METHODS
 const totalDepositsUSD = movements
-    .filter(mov => mov > 0)
-    //   .map(mov => mov * euroToUSD)
-    .map((mov, i, arr) => {
-        // console.log(arr);
-        return mov * euroToUSD;
-    })
-    .reduce((acc, mov) => acc + mov, 0);
+  .filter(mov => mov > 0)
+  //   .map(mov => mov * euroToUSD)
+  .map((mov, i, arr) => {
+    // console.log(arr);
+    return mov * euroToUSD;
+  })
+  .reduce((acc, mov) => acc + mov, 0);
 // the result of the above will be a new array and converted euro to usd
 // console.log(totalDepositsUSD);
 // this will output: 5522.000000000001
+
+// DO NOT CHAIN SPLICE OR REVERSE METHOD
+
+// THE FIND METHOD
+// can use find to retrieve one element of array
+// find takes callback method
+// find result will come in form of boolean
+// will return the first element in array where operation becomes true not whole array - just the one element
+const firstWithdrawal = movements.find(mov => mov < 0);
+// console.log(movements);
+// tbis will output:
+// (8) [200, 450, -400, 3000, -650, -130, 70, 1300]
+// 0: 200
+// 1: 450
+// 2: -400
+// 3: 3000
+// 4: -650
+// 5: -130
+// 6: 70
+// 7: 1300
+
+// console.log(firstWithdrawal);
+// this will output:
+// -400
+// because this is the first negative number in the array.
+
+// console.log(accounts);
+// this will output:
+// (4) [{…}, {…}, {…}, {…}]
+// 0: {owner: "Jonas Schmedtmann", movements: Array(8), interestRate: 1.2, pin: 1111, username: "js"}
+// 1: {owner: "Jessica Davis", movements: Array(8), interestRate: 1.5, pin: 2222, username: "jd"}
+// 2: {owner: "Steven Thomas Williams", movements: Array(8), interestRate: 0.7, pin: 3333, username: "stw"}
+// 3: {owner: "Sarah Smith", movements: Array(5), interestRate: 1, pin: 4444, username: "ss"}
+
+const account = accounts.find(acc => acc.owner === 'Jessica Davis');
+// console.log(account);
+// this will output:
+// {owner: "Jessica Davis", movements: Array(8), interestRate: 1.5, pin: 2222, username: "jd"}
 
 /////////////////////////////////////////////////
