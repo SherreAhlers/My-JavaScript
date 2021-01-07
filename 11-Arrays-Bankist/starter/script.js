@@ -87,6 +87,45 @@ const displayMovements = function(movements) {
 
 displayMovements(account1.movements);
 
+const calcDisplayBalance = function(movements) {
+    const balance = movements.reduce((acc, mov) => acc + mov, 0);
+    labelBalance.textContent = `${balance} EUR`;
+};
+calcDisplayBalance(account1.movements);
+
+const createUsernames = function(accounts) {
+    accounts.forEach(function(account) {
+        account.username = account.owner
+            // the name of user comes from account array key owner value - name
+            .toLowerCase()
+            .split(' ')
+            .map(name => name[0])
+            .join('');
+        // this created an array of only initials of account holders
+    });
+
+    // const username = user
+    //     .toLowerCase()
+    //     .split(' ')
+    //     // .map(function(name) {
+    //     //     return name[0];
+    //     // });
+    //     // OR LIKE THIS
+    //     .map(name => name[0])
+    //     .join('');
+    // return username;
+};
+createUsernames(accounts);
+// console.log(accounts);
+// the output will be:
+// 0: {owner: "Jonas Schmedtmann", movements: Array(8), interestRate: 1.2, pin: 1111, username: "js"}
+// 1: {owner: "Jessica Davis", movements: Array(8), interestRate: 1.5, pin: 2222, username: "jd"}
+// 2: {owner: "Steven Thomas Williams", movements: Array(8), interestRate: 0.7, pin: 3333, username: "stw"}
+// 3: {owner: "Sarah Smith", movements: Array(5), interestRate: 1, pin: 4444, username: "ss"}
+
+// console.log(createUsernames('Steven Thomas Williams'));
+// this will output: stw
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
@@ -339,8 +378,125 @@ const movementsDescriptions = movements.map(
 //     return `Movement ${i + 1}: You withdrew ${Math.abs(mov)}`;
 // }
 // });
-console.log(movementsDescriptions);
+// console.log(movementsDescriptions);
 // this will output:
 // (8) ["Movement 1: You deposited 200", "Movement 2: You deposited 450", "Movement 3: You withdrew 400", "Movement 4: You deposited 3000", "Movement 5: You withdrew 650", "Movement 6: You withdrew 130", "Movement 7: You deposited 70", "Movement 8: You deposited 1300"]
+
+// FILTER METHOD
+
+const deposits = movements.filter(function(mov) {
+    // with filter all we need is current element not index, key etc.
+    return mov > 0;
+    // this says only positive values (deposits) will be in array
+});
+// console.log(movements);
+// this will output:
+// (8) [200, 450, -400, 3000, -650, -130, 70, 1300]
+// 0: 200
+// 1: 450
+// 2: -400
+// 3: 3000
+// 4: -650
+// 5: -130
+// 6: 70
+// 7: 1300
+// console.log(deposits);
+// this will output:
+// (5) [200, 450, 3000, 70, 1300]
+// 0: 200
+// 1: 450
+// 2: 3000
+// 3: 70
+// 4: 1300
+
+const depositsFor = [];
+for (const mov of movements)
+    if (mov > 0) depositsFor.push(mov);
+    // console.log(depositsFor);
+    // this will output:
+    // (5) [200, 450, 3000, 70, 1300]
+    // 0: 200
+    // 1: 450
+    // 2: 3000
+    // 3: 70
+    // 4: 1300
+
+    //     const withdrawals = movements.filter(function(mov) {
+    //         return mov < 0;
+    //     });
+
+    // const withdrawalsFor = [];
+    // for (const mov of movements)
+    //     if (mov < 0) withdrawalsFor.push(mov);
+    // console.log(withdrawalsFor);
+    // this will output:
+    // (3) [-400, -650, -130]
+    // 0: -400
+    // 1: -650
+    // 2: -130
+    // OR LIKE THIS
+const withdrawals = movements.filter(mov => mov < 0);
+// console.log(withdrawals);
+// this will output:
+// (3) [-400, -650, -130]
+// 0: -400
+// 1: -650
+// 2: -130
+
+//  REDUCE METHOD -- most powerful method on arrays in javascript
+// console.log(movements);
+
+// arrow function version
+// const balance = movements.reduce((acc, cur) => acc + cur, 0);
+// console.log(balance2);
+
+// function expression version
+const balance = movements.reduce(function(acc, cur, i, arr) {
+    // first parameter is called the accumultor
+    // this will add all elements of array together to give sum which is what will be output.
+    // console.log(`Iteration ${i}: ${acc}`);
+    return acc + cur;
+    // accumulator will be current sum of all values before it
+    // each loop iteration we return the updated accumulator
+}, 0);
+// the above says we want to start adding from position 0
+// console.log(balance);
+// this will output: 3840 because that is the total of adding all elements in the array together.
+// Iteration 0: 0
+// Iteration 1: 200
+// Iteration 2: 650
+// Iteration 3: 250
+// Iteration 4: 3250
+// Iteration 5: 2600
+// Iteration 6: 2470
+// Iteration 7: 2540
+
+let balance2 = 0;
+//the above 0 is the inital accumulator value
+// need an external variable whenever we want to use a for loop - fine if you only need one loop - cumbersome if using more than one loop.
+for (const mov of movements) balance2 += mov;
+// console.log(balance2);
+
+// Get Maximum value of movements array
+const max = movements.reduce((acc, mov) => {
+    // acc here will represent current max number
+    if (acc > mov) return acc;
+    else return mov;
+}, movements[0]);
+// console.log(max);
+// this will output: 3000  -- because that is the highest positive number in the array
+
+// PIPELINE of METHODS
+const totalDepositsUSD = movements
+    .filter(mov => mov > 0)
+    //   .map(mov => mov * euroToUSD)
+    .map((mov, i, arr) => {
+        // console.log(arr);
+        return mov * euroToUSD;
+    })
+    .reduce((acc, mov) => acc + mov, 0);
+// the result of the above will be a new array and converted euro to usd
+// console.log(totalDepositsUSD);
+// this will output: 5522.000000000001
 
 /////////////////////////////////////////////////

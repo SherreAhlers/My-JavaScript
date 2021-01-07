@@ -46,3 +46,81 @@ checkDogs([9, 16, 6, 8, 3], [10, 5, 6, 1, 4]);
 // Dog number 5 is an adult, and is 6 years old.
 // Dog number 6 is still a puppy!
 // Dog number 7 is an adult, and is 4 years old.
+
+// CODE CHALLENGE # 2
+
+// Let's go back to Julia and Kate's study about dogs. This time, they want to convert dogs ages to human ages and calculate the average age of the dogs in their study.
+
+// Create a function 'calcAverageHumanAge', which accepts an array of dog's ages ('ages'), and does the following things in order:
+// 1. Calculate the dog age in human years using the following formula:  if the dog is <= 2 years old, humanAge = 2 * dogAge. If the dog is > 2 years old, humanAge = 16 + dogAge * 4.
+// 2. Exclude all dogs that are less than 18 human years ikd (which is the same as keeping dogs that are at least 18 years old)
+// 3. Calculate the average human age of all adult dogs (you should already know from other challenges how we calculate averages)
+// 4. Run the function for both test datasets:
+// TEST DATA 1: [5, 2, 4, 1, 15, 8, 3]
+// TEST DATA 2: [16, 6, 10, 5, 6, 1, 4]
+
+// MY VERSION - WRONG!
+
+// const calcAverageHumanAge = function(ages) {
+//     let humanAge = 0;
+//     let dogAge = 0;
+//     if (dogAge <= 2) {
+//         return (dogAge * 2 = humanAge);
+//     } else {
+//         return (16 + dogAge * 4 = humanAge);
+//     }
+// };
+
+const calcAverageHumanAge = function(ages) {
+    const humanAges = ages.map(age => (age <= 2 ? 2 * age : 16 + age * 4));
+    const adults = humanAges.filter(age => age >= 18);
+    // console.log(humanAges);
+    // this will output:
+    // (7) [36, 4, 32, 2, 76, 48, 28]
+    // 0: 36
+    // 1: 4
+    // 2: 32
+    // 3: 2
+    // 4: 76
+    // 5: 48
+    // 6: 28
+    // 7) [80, 40, 56, 36, 40, 2, 32]
+    // 0: 80
+    // 1: 40
+    // 2: 56
+    // 3: 36
+    // 4: 40
+    // 5: 2
+    // 6: 32
+
+    // console.log(adults);
+    // this will output:
+    // 5) [36, 32, 76, 48, 28]
+    // 0: 36
+    // 1: 32
+    // 2: 76
+    // 3: 48
+    // 4: 28
+
+    // (6) [80, 40, 56, 36, 40, 32]
+    // 0: 80
+    // 1: 40
+    // 2: 56
+    // 3: 36
+    // 4: 40
+    // 5: 32
+
+    const average = adults.reduce(
+        (acc, age, i, arr) => acc + age / arr.length,
+        0
+    );
+
+    // 2 3. (2+3)/2 = 2.5 2/2+2/3 = 2.5
+
+    return average;
+};
+const avg1 = calcAverageHumanAge([5, 2, 4, 1, 15, 8, 3]);
+const avg2 = calcAverageHumanAge([16, 6, 10, 5, 6, 1, 4]);
+// console.log(avg1, avg2);
+// this will output:
+// 44 47.333333333333336
