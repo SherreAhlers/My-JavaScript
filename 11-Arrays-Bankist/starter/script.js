@@ -59,15 +59,16 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   // this function will recieve on array of movements to work with
   containerMovements.innerHTML = '';
   // this empties the container and only allows new data to be added.
   // innerHTML will return all html tags
   // here we are using innerHTML as a setter.
-
   // textContent will return the text itself
-  movements.forEach(function (mov, i) {
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+  // here I am creating a copy of movements array
+  movs.forEach(function (mov, i) {
     // this starts with first movement on top and the rest shown underneath the previous
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `
@@ -85,9 +86,9 @@ const displayMovements = function (movements) {
   });
 };
 
-const calcDisplayBalance = function (movements) {
-  const balance = movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${balance}€`;
+const calcDisplayBalance = function (acc) {
+  acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${acc.balance}€`;
 };
 
 const calcDisplaySummary = function (acc) {
@@ -133,8 +134,17 @@ createUsernames(accounts);
 
 // console.log(createUsernames('Steven Thomas Williams'));
 // this will output: stw
+const updateUI = function (acc) {
+  // Display movements
+  displayMovements(acc.movements);
+  // Display balance
+  calcDisplayBalance(acc);
+  // Display summary
+  calcDisplaySummary(acc);
+};
 
-// EVENT HANDLER
+// EVENT HANDLERS
+
 let currentAccount;
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
@@ -160,13 +170,78 @@ btnLogin.addEventListener('click', function (e) {
     // CLEAR INPUT FIELDS
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
-    // Display movements
-    displayMovements(currentAccount.movements);
-    // Display balance
-    calcDisplayBalance(currentAccount.movements);
-    // Display summary
-    calcDisplaySummary(currentAccount);
+
+    // UPDATE UI
+    updateUI(currentAccount);
   }
+});
+
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const recieverAcc = accounts.find(
+    acc => acc.username === inputTransferTo.value
+  );
+  // here we are looking for an account with the username that we input, select if from account using find method.
+  //   console.log(amount, recieverAcc);
+  // this will output:
+  // 100 {owner: "Jessica Davis", movements: Array(8), interestRate: 1.5, pin: 2222, username: "jd"}
+  inputTransferAmount.value = inputTransferTo.value = '';
+
+  if (
+    amount > 0 &&
+    recieverAcc &&
+    currentAccount.balance >= amount &&
+    recieverAcc?.username !== currentAccount.username
+  ) {
+    // DOING THE TRANSFER
+    currentAccount.movements.push(-amount);
+    recieverAcc.movements.push(amount);
+
+    updateUI(currentAccount);
+  }
+});
+
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  const amount = Number(inputLoanAmount.value);
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    // ADD MOVEMENT
+    currentAccount.movements.push(amount);
+    // UPDATE UP
+    updateUI(currentAccount);
+  }
+  inputLoanAmount.value = '';
+});
+
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+  // console.log('Delete');
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      acc => acc.username === currentAccount.username
+    );
+    // I passed in a condition that will return true or false, findIndex will find first element in array where condition is true.
+
+    // DELETE ACCOUNT
+    accounts.splice(index, 1);
+    // HIDE UI
+    containerApp.style.opacity = 0;
+  }
+  inputCloseUsername.value = inputClosePin.value = '';
+});
+
+let sorted = false;
+// in the beginning array is not sorted
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
+  // this is what allows everything to work, each time click change false to true then to false then to true and so on and so forth.
 });
 
 /////////////////////////////////////////////////
@@ -578,5 +653,219 @@ const account = accounts.find(acc => acc.owner === 'Jessica Davis');
 // console.log(account);
 // this will output:
 // {owner: "Jessica Davis", movements: Array(8), interestRate: 1.5, pin: 2222, username: "jd"}
+
+// FIND INDEX METHOD
+// different from find method in that it looks for a particular index not element
+// gets access to index and current array
+// added in ES6 - will not work in old browsers
+
+// SOME METHOD
+// with some method we can specify a condition where as the includes method will return boolean - true or false
+const anyDeposits = movements.some(mov => mov > 0);
+// console.log(anyDeposits);
+// this will output: TRUE
+
+// EVERY METHOD
+// only returns true if all elements in array are true
+
+// console.log(movements.every(mov => mov > 0));
+// this will output; FALSE
+
+// console.log(account4.movements.every(mov => mov > 0));
+// this will output: TRUE
+
+// SEPERATE CALLBACK
+const deposit = mov => mov > 0;
+// console.log(movements.some(deposit));
+// this will output: TRUE
+
+// console.log(movements.every(deposit));
+// this will output: FALSE
+
+// console.log(movements.filter(deposit));
+// this will output:
+// (5) [200, 450, 3000, 70, 1300]
+// 0: 200
+// 1: 450
+// 2: 3000
+// 3: 70
+// 4: 1300
+
+// FLAT METHOD
+// only goes one level deep when flattening array
+const arr1 = [[1, 2, 3], [4, 5, 6], 7, 8];
+// console.log(arr1.flat());
+// this will output:
+// (8) [1, 2, 3, 4, 5, 6, 7, 8] --- because it flattens everything into one array instead of multiple
+
+const arrDeep = [[[1, 2], 3], [4, [5, 6]], 7, 8];
+// console.log(arrDeep.flat());
+// this will output:
+// (6) [Array(2), 3, 4, Array(2), 7, 8]
+// 0: (2) [1, 2]
+// 1: 3
+// 2: 4
+// 3: (2) [5, 6]
+// 4: 7
+// 5: 8
+
+// console.log(arrDeep.flat(2));
+// this will output:
+// (8) [1, 2, 3, 4, 5, 6, 7, 8]  -- because we specified to go 2 levels deep in the parenthesis
+
+const accountMovements = accounts.map(acc => acc.movements);
+// console.log(accountMovements);
+// this will output an array with all the movements from all accounts
+
+const allMovements = accountMovements.flat();
+// console.log(allMovements);
+// this will output:
+// (29) [200, 450, -400, 3000, -650, -130, 70, 1300, 5000, 3400, -150, -790, -3210, -1000, 8500, -30, 200, -200, 340, -300, -20, 50, 400, -460, 430, 1000, 700, 50, 90]
+
+// const overallBalance = allMovements.reduce((acc, mov) => acc + mov, 0);
+// console.log(overallBalance);
+// this will output the sum of all the movements in allMovements array
+
+// --------OR LIKE THIS!!----------
+const overallBalance = accounts
+  .map(acc => acc.movements)
+  .map(acc => acc.movements)
+  .flat()
+  .reduce((acc, mov) => acc + mov, 0);
+// console.log(overallBalance);
+// the output will be: 17840
+
+// FLATMAP METHOD
+// works on not nested arrays - if nested array will need a seperate flat method.
+const overallBalance2 = accounts
+  .flatMap(acc => acc.movements)
+  .reduce((acc, mov) => acc + mov, 0);
+// console.log(overallBalance2);
+// the output will be: 17840
+
+// SORTING ARRAYS
+// tons of algorithms and methods for sorting values
+// javascript has a built in sort method.
+// SORTING WITH STRINGS
+const owners = ['Jonas', 'Zach', 'Adam', 'Matha'];
+// console.log(owners.sort());
+// this will output:
+// (4) ["Adam", "Jonas", "Matha", "Zach"]
+
+// console.log(owners);
+// this mutates the original array - so be careful using it
+
+// SORTING NUMBERS
+// console.log(movements);
+// console.log(movements.sort());
+// sorting numbers is more complicated
+// sort wants to return a string so doesn't sort numbers properly
+// refactor like this:
+
+movements.sort((a, b) => {
+  // if we return a negative value b will be sorted  before a
+  // if we return a positive value a will be sorted first.
+  //ASCENDING NUMBERS
+
+  //   if (a > b) return 1;
+  //   // means switch order
+  //   if (a < b) return -1;
+  //   // keep order
+  //   console.log(movements);
+
+  // OR LIKE THIS
+  movements.sort((a, b) => a - b);
+  //   console.log(movements);
+  // this will output: (8) [-130, -400, -650, 1300, 200, 3000, 450, 70]
+  // which is the correct sort in acending order
+
+  // DESCENDING ORDER
+  //   movements.sort((a, b) => {
+  //       if(a < b) return -1;
+  //       if(a > b) return 1;
+  //   })
+
+  // OR LIKE TIS
+  movements.sort((a, b) => b - a);
+  //   console.log(movements);
+  // this will output:
+  // (8) [3000, 1300, 450, 200, 70, -130, -400, -650]
+});
+
+// Ways to create arrays
+
+// console.log([1, 2, 3, 4, 5, 6, 7]);
+// const arr = [1, 2, 3, 4, 5, 6, 7];
+
+// console.log(new Array(1, 2, 3, 4, 5, 6, 7));
+
+const x = new Array(7);
+// this will create a new array with 7 empty elements
+// console.log(x);
+// (7) [empty x 7]
+
+// console.log(x.map(() => 5));
+// this will output: (7) [empty x 7]
+
+x.fill(1);
+// this will fill entire array with the value in parentheses
+// console.log(x);
+// this will output: (7) [1, 1, 1, 1, 1, 1, 1]
+
+// x.fill(1, 3);
+// this will fill at index 3 and to the end
+
+x.fill(1, 3, 5);
+// this will fill at index 3 and end at index 5
+// console.log(x);
+// this will output: (7) [empty × 3, 1, 1, empty × 2]
+
+// empty array + fill method
+arr.fill(23, 2, 6);
+// fill will always create a brand new array
+// console.log(arr);
+// this will output: (5) [1, 2, 23, 23, 23, 23, 7]
+
+const y = Array.from({ length: 7 }, () => 1);
+// this will call the object length and arrow function calls the 1
+// console.log(y);
+// this will output: (7) [1, 1, 1, 1, 1, 1, 1]
+
+const z = Array.from({ length: 7 }, (_, i) => i + 1);
+// the second argunment (callback function) is just like using the map method, the first parameter is an _ because we are not using that feature of the map method.
+// console.log(z);
+// this will output: (7) [1, 2, 3, 4, 5, 6, 7]
+
+const dice = Array.from({ length: 100 }, (_, i) => Math.random() * 100);
+// console.log(dice);
+
+// strings, maps, sets are all iterable
+// querySelectorAll() returns a node list - something like an array that contains all selected elements but it is not a real array cannot use methods on it.
+
+// const movementsUI = Array.from(document.querySelectorAll('.movements__value'));
+// this will take the document.querySelectorAll elements and put them into an array that I can use methods on.
+
+// console.log(movementsUI);
+// this will output:
+// (2) [div.movements__value, div.movements__value]0: div.movements__value1: div.movements__valuelength: 2__proto__: Array(0)
+
+labelBalance.addEventListener('click', function () {
+  // use Array.from to create an array from the result of querySelectorAll - a node list that is array like structure
+  // gets converted to array using ARray.from
+  // then we included a mapping function that transforms initial array into exact array we want it.
+  // converting the raw element to textContent and replacing €
+  // with nothing
+  const movementsUI = Array.from(
+    document.querySelectorAll('.movements__value'),
+    el => Number(el.textContent.replace('€', ''))
+  );
+  // console.log(movementsUI.map(el => Number(el.textContent.replace('€', ''))));
+  // console.log(movementsUI);
+  // this will output:
+  // 8) [1300, 70, -130, -650, 3000, -400, 450, 200]
+
+  // movementsUI2 = [...document.querySelectorAll('.movements__value')];
+  // the above is another way to create an array but then we would have to do mapping seperatly instead of doing it all with Array.from
+});
 
 /////////////////////////////////////////////////
