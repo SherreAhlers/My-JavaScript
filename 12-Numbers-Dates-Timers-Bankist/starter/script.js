@@ -565,3 +565,83 @@ const num = 23;
 // DIVISION WITH BigInt
 // console.log(11n / 3n);
 // this will output: 3n
+
+// CREATING DATES IN JAVASCRIPT
+const now = new Date();
+// console.log(now);
+// this will output:
+// Mon Jan 18 2021 16:26:13 GMT-0600 (Central Standard Time)
+
+// parse in date
+// console.log(new Date('Jan 18 2021 18:05:41'));
+// Mon Jan 18 2021 18:05:41 GMT-0600 (Central Standard Time)
+
+// console.log(new Date('January 18, 2021'));
+// the above can be tricky if manually inputing information
+// Mon Jan 18 2021 00:00:00 GMT-0600 (Central Standard Time)
+
+// console.log(new Date(account1.movementsDates[0]));
+// this will output: Mon Nov 18 2019 15:31:17 GMT-0600 (Central Standard Time)
+
+// console.log(new Date(2037, 10, 19, 15, 23, 5));
+// this will output:
+// Thu Nov 19 2037 15:23:05 GMT-0600 (Central Standard Time)
+// the month in javaScript is 0 based so november will be 10 instead of 11
+
+// console.log(new Date(2037, 10, 31));
+// this will output:
+// Tue Dec 01 2037 00:00:00 GMT-0600 (Central Standard Time)
+// this outputs December because there is not 31 days in november
+
+// console.log(new Date(0));
+// this will output: Wed Dec 31 1969 18:00:00 GMT-0600 (Central Standard Time)
+
+// console.log(new Date(3 * 24 * 60 * 60 * 1000));
+// this is how we convert from days to miliseconds
+// 3 days times 24 hours times 60 minutes in an hour times 60 number of seconds in minutes times 1000 = miliseconds
+// this will output:
+// Sat Jan 03 1970 18:00:00 GMT-0600 (Central Standard Time)
+
+// WORKING WITH DATES
+const future = new Date(2037, 10, 19, 15, 23);
+// console.log(future);
+// this will output:
+// Thu Nov 19 2037 15:23:00 GMT-0600 (Central Standard Time)
+
+// console.log(future.getFullYear());
+// this will output: 2037
+
+// console.log(future.getMonth());
+// this will output: 10
+
+// console.log(future.getDay());
+// this is referencing the day of week
+// this will output: 4
+
+// console.log(future.getHours());
+// this will output: 15
+
+// console.log(future.getMinutes());
+// this will output: 23
+
+// console.log(future.getSeconds());
+// this will output: 0
+
+// console.log(future.toISOString());
+// this follows an international standard
+// this will output: 2037-11-19T21:23:00.000Z
+
+// console.log(future.getTime());
+// this will output: 2142278580000
+// how much time has passed since date above in miliseconds
+
+// console.log(new Date(2142256980000));
+// this will output:
+// Thu Nov 19 2037 09:23:00 GMT-0600 (Central Standard Time)
+
+// console.log(Date.now());
+// this will output: 1611010655845
+
+future.setFullYear(2040);
+// console.log(future);
+// this will output: Mon Nov 19 2040 15:23:00 GMT-0600 (Central Standard Time)
