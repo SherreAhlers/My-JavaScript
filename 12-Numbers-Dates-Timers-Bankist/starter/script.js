@@ -99,6 +99,13 @@ const formatMovementDate = function (date, locale) {
   return new Intl.DateTimeFormat(locale).format(date);
 };
 
+const formatCur = function (value, locale, currency) {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currency,
+  }).format(value);
+};
+
 const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = '';
 
@@ -111,8 +118,9 @@ const displayMovements = function (acc, sort = false) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
     const date = new Date(acc.movementsDates[i]);
-
     const displayDate = formatMovementDate(date, acc.locale);
+
+    const formattedMov = formatCur(mov, acc.locale, acc.currency);
 
     const html = `
       <div class="movements__row">
@@ -120,7 +128,7 @@ const displayMovements = function (acc, sort = false) {
       i + 1
     } ${type}</div>
     <div class="movements__date">${displayDate}</div>
-        <div class="movements__value">${mov.toFixed(2)}€</div>
+        <div class="movements__value">${formattedMov}</div>
       </div>
     `;
 
@@ -130,19 +138,19 @@ const displayMovements = function (acc, sort = false) {
 
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${acc.balance.toFixed(2)}€`;
+  labelBalance.textContent = formatCur(acc.balance, acc.locale, acc.currency);
 };
 
 const calcDisplaySummary = function (acc) {
   const incomes = acc.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumIn.textContent = `${incomes.toFixed(2)}€`;
+  labelSumIn.textContent = formatCur(incomes, acc.locale, acc.currency);
 
   const out = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumOut.textContent = `${Math.abs(out).toFixed(2)}€`;
+  labelSumOut.textContent = formatCur(Math.abs(out), acc.locale, acc.currency);
 
   const interest = acc.movements
     .filter(mov => mov > 0)
@@ -152,7 +160,7 @@ const calcDisplaySummary = function (acc) {
       return int >= 1;
     })
     .reduce((acc, int) => acc + int, 0);
-  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
+  labelSumInterest.textContent = formatCur(interest, acc.locale, acc.currency);
 };
 
 const createUsernames = function (accs) {
@@ -177,14 +185,43 @@ const updateUI = function (acc) {
   calcDisplaySummary(acc);
 };
 
+const startLogOutTimer = function () {
+  const tick = function () {
+    const min = String(Math.trunc(time / 60)).padStart(2, 0);
+    const sec = String(time % 60).padStart(2, 0);
+    // In each callback call, print the remaining time to user interface
+    labelTimer.textContent = `${min}:${sec}`;
+
+    // When time is at 0 (when timer expires) stop timer and logout user
+    if (time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = 'Log in to get started.';
+      containerApp.style.opacity = 0;
+    }
+
+    // Decrease 1s
+    time--;
+    // this will show the timer value each time a second has passed
+  };
+
+  // Setting time to 5 minutes
+  let time = 300; // 5 minutes
+
+  // Call the timer every second
+  tick();
+  const timer = setInterval(tick, 1000);
+
+  return timer;
+};
+
 ///////////////////////////////////////
 // Event handlers
-let currentAccount;
+let currentAccount, timer;
 
 // FAKE ALWAYS LOGGED IN
-currentAccount = account1;
-updateUI(currentAccount);
-containerApp.style.opacity = 100;
+// currentAccount = account1;
+// updateUI(currentAccount);
+// containerApp.style.opacity = 100;
 
 // EXPERAMENTING with API - to get differecnt codes google iso language code table - click one that has lingos.net
 
@@ -220,7 +257,7 @@ btnLogin.addEventListener('click', function (e) {
   currentAccount = accounts.find(
     acc => acc.username === inputLoginUsername.value
   );
-  console.log(currentAccount);
+  // console.log(currentAccount);
 
   if (currentAccount?.pin === +inputLoginPin.value) {
     // in the above having a + before the value will automatically call on javascript type conversion to convert string into a number
@@ -268,6 +305,12 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
 
+    // TIMER
+    if (timer) clearInterval(timer);
+    // this says if log in and there is a timer - stop timer and then
+    timer = startLogOutTimer();
+    // now start timer
+
     // Update UI
     updateUI(currentAccount);
   }
@@ -299,6 +342,10 @@ btnTransfer.addEventListener('click', function (e) {
 
     // Update UI
     updateUI(currentAccount);
+
+    // RESET TIMER
+    clearInterval(timer);
+    timer = startLogOutTimer();
   }
 });
 
@@ -309,14 +356,21 @@ btnLoan.addEventListener('click', function (e) {
   // this will round the amount requested for a loan to an int (whole number) no decimal places
 
   if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
-    // Add movement
-    currentAccount.movements.push(amount);
+    setTimeout(function () {
+      // Add movement
+      currentAccount.movements.push(amount);
 
-    // ADD LOAN DATE
-    currentAccount.movementsDates.push(new Date().toISOString());
+      // ADD LOAN DATE
+      currentAccount.movementsDates.push(new Date().toISOString());
 
-    // Update UI
-    updateUI(currentAccount);
+      // Update UI
+      updateUI(currentAccount);
+
+      // RESET TIMER
+      clearInterval(timer);
+      timer = startLogOutTimer();
+    }, 2500);
+    // this will cause the loan to take 2.5 seconds to show up once requested
   }
   inputLoanAmount.value = '';
 });
@@ -759,3 +813,85 @@ const days1 = calcDaysPassed(new Date(2037, 3, 14), new Date(2037, 3, 24));
 // console.log(days1);
 // this will output:
 // 10
+
+// INTERNATIONALIZING NUMBERS
+const num1 = 3884764.23;
+
+const options = {
+  // style: 'unit',
+  // style: 'percent'
+  style: 'currency',
+
+  // unit: 'mile-per-hour', // there are numerous format options to choose from look up in docs
+  unit: 'celsius', // the will add Celcius
+  currency: 'EUR', // this will add the €
+  // have to set currency because it is not defined by locale
+  useGrouping: false, // this will print a number without the seperators ex: 123456 instead of 123,456
+};
+
+// FOR UNITED STATES
+// console.log('US:   ', new Intl.NumberFormat('en-US', options).format(num1));
+// this will output: US:    3,884,764.23 mph
+
+// because the US uses commas to seperate numbers and a period to show cents
+
+// FOR GERMANY
+// console.log(
+// 'Germany:   ',
+// new Intl.NumberFormat('de-DE', options).format(num1)
+// );
+// this will output: Germany:    3.884.764,23 mi/h
+
+//FOR SYRIA
+// console.log('Syria:   ', new Intl.NumberFormat('ar-SY', options).format(num1));
+// this will output: Syria:    ٣٬٨٨٤٬٧٦٤٫٢٣ ميل/س
+
+// LOCALE FROM BROWSER
+// console.log(
+// navigator.language,
+// new Intl.NumberFormat(navigator.language, options).format(num1)
+// );
+// this will output: en-US 3,884,764.23 mph
+
+// TIMERS IN JAVASCRIPT
+
+// setTimeout(() => console.log('Here is your pizza!'), 3000);
+
+// this call back is the argument being set for setTimeOut function, second argument is the time that we want to pass in miliseconds
+// the code execution does not stop when it reaches it point it will continue until it is called later
+
+// console.log('Waiting...');
+// the Waiting will pop up first even though the setTimer code is first - this is called asyncronous javascript
+
+// any argument passeed after delay will be considered arguments of function
+// const ingredients = ['olives', 'spinach'];
+// setTimeout(
+//   (ing1, ing2) => console.log(`Here is your pizza with ${ing1} and ${ing2}!`),
+//   3000,
+//   'olive',
+//   'spinach'
+// );
+// this will output:
+// Here is your pizza with olive and spinach!    - after 3 seconds of loading the page
+
+const ingredients = ['olives', 'apples'];
+// const pizzaTimer = setTimeout(
+//   (ing1, ing2) => console.log(`Here is your pizza with ${ing1} and ${ing2}!`),
+//   3000,
+//   ...ingredients
+// );
+// console.log('Waiting... ');
+
+if (ingredients.includes('spinach')) clearTimeout(pizzaTimer);
+// if the above does contain spinach it won't output anything into console.
+// if spinace is not there it will print to the console.
+
+// SetTimeOut FUNCTION
+// setInterval(function () {
+// const now2 = new Date();
+// console.log(now2);
+// this will output: Thu Jan 21 2021 16:17:41 GMT-0600 (Central Standard Time)
+// once every 10 seconds
+// }, 10000);
+
+// IMPLEMENT setInterval Timer
