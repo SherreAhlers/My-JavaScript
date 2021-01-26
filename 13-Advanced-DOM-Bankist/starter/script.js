@@ -1,11 +1,16 @@
 'use strict';
 
+// dom selectors
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 const btnScrollTo = document.querySelector('.btn--scroll-to');
 const section1 = document.querySelector('#section--1');
+const tabs = document.querySelectorAll('.operations__tab');
+const tabsContainer = document.querySelector('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content');
+const nav = document.querySelector('.nav');
 
 ///////////////////////////////////////
 // Modal window
@@ -38,224 +43,346 @@ document.addEventListener('keydown', function (e) {
 btnScrollTo.addEventListener('click', function (e) {
   const s1cords = section1.getBoundingClientRect();
 
-  ////////////////////////////////////////////////////////////////
-  // LECTURE
-
-  // DOM SELECTORS - SELECTING ELEMENTS
-
-  // console.log(document.documentElement);
-  // this will include entire html
-
-  // console.log(document.head);
-  // this will output the head elements of html
-
-  // console.log(document.body);
-  // this will output the body elements of html
-
   const header = document.querySelector('.header');
   const allSections = document.querySelectorAll('.section');
-  // console.log(allSections);
-  // this will output: A NodeList containing all the sections in the html
 
   document.getElementById('section--1');
   const allButtons = document.getElementsByTagName('button');
-  // console.log(allButtons);
-  // this will output: A HTMLCollection of all the buttons on the html
 
-  // console.log(document.getElementsByClassName('btn'));
-  // do not need the . selector just the name of the element
-  // this will output: A HTMLCollection of the btns
-
-  // CREATING AND INSERTING ELEMENTS
-  // .insertAdjacentHTML
   const message = document.createElement('div');
-  // this creates a dom object that we can use to do something on it but it is not on the page - if want on page will need to manualy insert it into a page.
+
   message.classList.add('cookie-message');
-  // this will display a small cookie message at the bottom of the screen  -- look at css file cookie-message
+
   message.textContent =
     'We use cookies for improved functionality and analytics.';
   message.innerHTML =
     'We use cookies for improved functionality and analytics. <button class="btn btn--close-cookie">Agree</button>';
-  // the above will be appended to header
 
   header.prepend(message);
-  // this will show up at the top of the message section
 
-  // header.append(message);
-  // this will make it the last element in the message
-
-  // header.append(message.cloneNode(true));
-  // this will copy the header message in both places - top and bottom
-
-  // header.before(message);
-  // this will put the message before the header - a sibling element
-
-  // header.after(message);
-  // this will put the message after the header
-
-  // DELETE ELEMENTS
   document
     .querySelector('.btn--close-cookie')
     .addEventListener('click', function () {
       message.remove();
-      // we don't need a queryselector here because message is already stored in memory.
 
-      // message.parentElement.removeChild(message)
-      // this is a bit outdated way to do this  - it is called dom traversing
+      message.style.backgroundColor = '#37383d';
+      message.style.width = '120%';
+
+      section1.scrollIntoView({ behavior: 'smooth' });
     });
-
-  // STYLES, ATTRIBUTES, and CLASSES
-
-  // STYLES
-  message.style.backgroundColor = '#37383d';
-  message.style.width = '120%';
-  // the above are called inline styles
-  // we can console.log any style we set manually like
-
-  // console.log(message.style.backgroundColor);
-  // but we won't get a message if we did
-  // console.log(message.style.color);
-
-  // console.log(getComputedStyle(message));
-  // this will output a huge object of all the styles
-
-  // console.log(getComputedStyle(message).color);
-  // this will output the color we were trying to use on line 110
-
-  // message.style.height =
-  //   Number.parseFloat(getComputedStyle(message).height, 10) + 40 + 'px';
-  // the result of this is a string - so added the Number.parseFloat() to turn it into a number
-
-  // CSS VARIABLES
-  // can change a value in many places of all CSS files
-
-  // :root  in CSS refers to the document element
-  // document.documentElement.style.setProperty('--color-primary', 'orangered');
-  // this is how we change style of page using javescript
-  // works on most css
-
-  // ATTRIBUTES
-  // ex: in html  - src, alt, class
-  // const logo = document.querySelector('.nav__logo');
-  // console.log(logo.alt);
-  // this will output: Bankist Logo  -- because alt is property of img logo
-
-  // console.log(logo.src);
-  // this will output: http://127.0.0.1:8080/13-Advanced-DOM-Bankist/starter/img/logo.png
-  // which is the physical location of the logo image file
-
-  // console.log(logo.className);
-  // this will output: the class name nav__logo
-
-  // NON STANDARD ATTRIBUTES
-  // console.log(logo.designer);
-  // this below will work, the above will not
-  // console.log(logo.getAttribute('designer'));
-
-  // console.log(logo.setAttribute('company', 'Bankist'));
-  // this will set the company attribute to Bankist
-
-  // console.log(logo.getAttribute('src'));
-  // this will output: img/log.png
-
-  // const link = document.querySelector('.twitter-link');
-  // console.log(link.href);
-  // this will output: the litteral link to twitter account
-
-  // console.log(link.getAttribute('href'));
-
-  // DATA ATTRIBUTES
-  // console.log(logo.dataset.versionNumeber);
-  // reference line 25 of html  = data-version-number="3.0"
-  // this  can be very useful
-
-  // CLASSES
-
-  // logo.classList.add('c', 'j');
-  // can use multiple classnames with use of ,
-  // logo.classList.remove('c');
-  // logo.classList.toggle('c');
-  // logo.classList.contains('c'); // not includes like array
-
-  // SHOULD NOT USE - will override whatever was originally there
-  // logo.className = 'jonas'
-
-  // btnScrollTo.addEventListener('click', function (e) {
-  //   const s1cords = section1.getBoundingClientRect();
-
-  // console.log(s1cords);
-  // this will output:
-  //   DOMRect {x: 0, y: 61, width: 825, height: 1736, top: 61, …}
-  // bottom: 1797
-  // height: 1736
-  // left: 0
-  // right: 825
-  // top: 61
-  // width: 825
-  // x: 0  // measured from the left side
-  // y: 61 // measured from the top
-
-  // console.log(e.target.getBoundingClientRect());
-  // this will output:
-  // DOMRect {x: 30, y: 295, width: 112.46875, height: 29, top: 295, …}
-  // x and y will change with a scroll
-
-  // console.log('Current scroll (X/Y)', window.pageXOffset, window.pageYOffset);
-  // this will output:
-  // Current scroll (X/Y) 0 380
-
-  // console.log(
-  //   'height/width viewport',
-  //   document.documentElement.clientHeight,
-  //   document.documentElement.clientWidth
-  // );
-  // this will output: height/width viewport 330 825
-
-  // SCROLLING
-  // window.scrollTo(
-  //   s1cords.left + window.pageXOffset,
-  //   s1cords.top + window.pageYOffset
-  // );
-  // this is global function available on window object
-
-  // OUTDATED WAY
-  // window.scrollTo({
-  //   left: s1cords.left + window.pageXOffset,
-  //   top: s1cords.top + window.pageYOffset,
-  //   behavior: 'smooth',
-  // });
-
-  // MORE MODERN WAY
-  section1.scrollIntoView({ behavior: 'smooth' });
-  // only works in modern browsers
 });
-
 ///////////////////////////////////////
 // Page Navigation
 
-// document.querySelectorAll('.nav__link').forEach(function (el) {
-//   el.addEventListener('click', function (e) {
-//     e.preventDefault();
-//     const id = this.getAttribute('href');
-//     console.log(id);
-//     document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
-//   });
-// });
-
-// 1. Add event listener to common parent element
-// 2. Determine what element originated the event
 document.querySelector('.nav__links').addEventListener('click', function (e) {
   e.preventDefault();
-  // console.log(e.target);
 
   // Matching strategy
   if (e.target.classList.contains('nav__link')) {
     const id = e.target.getAttribute('href');
-    // console.log(id);
     document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
   }
-  // used the matching strategy because we wanted to only allow click on relevent elements inside container
 });
+
+// TABBED COMPONENT
+
+tabsContainer.addEventListener('click', function (e) {
+  const clicked = e.target.closest('.operations__tab');
+
+  if (!clicked) return;
+
+  // remove active classes
+  tabs.forEach(t => t.classList.remove('operations__tab--active'));
+  tabsContent.forEach(c => c.classList.remove('operations__content--active'));
+
+  // Active tab
+  clicked.classList.add('operations__tab--active');
+
+  // Activate content area
+  console.log(clicked.dataset.tab);
+  document
+    .querySelector(`.operations__content--${clicked.dataset.tab}`)
+    .classList.add('operations__content--active');
+});
+
+// Menu fade animation
+// use event delegation -find common parent of all links and logo
+const handleHover = function (e) {
+  // console.log(this, e.currentTarget);
+  if (e.target.classList.contains('nav__link')) {
+    const link = e.target;
+    const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+    const logo = link.closest('.nav').querySelector('img');
+
+    siblings.forEach(el => {
+      if (el !== link) el.style.opacity = this;
+    });
+    logo.style.opacity = this;
+  }
+};
+
+// Passing "argument" into handler
+nav.addEventListener('mouseover', handleHover.bind(0.5));
+nav.addEventListener('mouseout', handleHover.bind(1));
+
+// STICKY NAVIGATION: Intersection Observer API
+const header = document.querySelector('.header');
+const navHeight = nav.getBoundingClientRect().height;
+
+const stickyNav = function (entries) {
+  const [entry] = entries;
+  if (!entry.isintersecting) nav.classList.add('sticky');
+  else nav.classList.remove('sticky');
+};
+
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${navHeight}px`,
+});
+
+headerObserver.observe(header);
+
+// REVEAL SECTIONS
+const allSections = document.querySelectorAll('.section');
+
+const revealSection = function (entries, observer) {
+  const [entry] = entries;
+  // console.log(entry);
+  if (!entry.isIntersecting) return;
+
+  entry.target.classList.remove('section--hidden');
+  observer.unobserve(entry.target);
+};
+
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.15,
+});
+
+allSections.forEach(function (section) {
+  sectionObserver.observe(section);
+  section.classList.add('section--hidden');
+});
+
+//////////////////////////////////////////////////////////////////
+// LECTURE
+
+//   // DOM SELECTORS - SELECTING ELEMENTS
+
+//   // console.log(document.documentElement);
+//   // this will include entire html
+
+//   // console.log(document.head);
+//   // this will output the head elements of html
+
+//   // console.log(document.body);
+//   // this will output the body elements of html
+
+//   const header = document.querySelector('.header');
+//   const allSections = document.querySelectorAll('.section');
+//   // console.log(allSections);
+//   // this will output: A NodeList containing all the sections in the html
+
+//   document.getElementById('section--1');
+//   const allButtons = document.getElementsByTagName('button');
+//   // console.log(allButtons);
+//   // this will output: A HTMLCollection of all the buttons on the html
+
+//   // console.log(document.getElementsByClassName('btn'));
+//   // do not need the . selector just the name of the element
+//   // this will output: A HTMLCollection of the btns
+
+//   // CREATING AND INSERTING ELEMENTS
+//   // .insertAdjacentHTML
+//   const message = document.createElement('div');
+//   // this creates a dom object that we can use to do something on it but it is not on the page - if want on page will need to manualy insert it into a page.
+//   message.classList.add('cookie-message');
+//   // this will display a small cookie message at the bottom of the screen  -- look at css file cookie-message
+//   message.textContent =
+//     'We use cookies for improved functionality and analytics.';
+//   message.innerHTML =
+//     'We use cookies for improved functionality and analytics. <button class="btn btn--close-cookie">Agree</button>';
+//   // the above will be appended to header
+
+//   header.prepend(message);
+//   // this will show up at the top of the message section
+
+//   // header.append(message);
+//   // this will make it the last element in the message
+
+//   // header.append(message.cloneNode(true));
+//   // this will copy the header message in both places - top and bottom
+
+//   // header.before(message);
+//   // this will put the message before the header - a sibling element
+
+//   // header.after(message);
+//   // this will put the message after the header
+
+//   // DELETE ELEMENTS
+//   document
+//     .querySelector('.btn--close-cookie')
+//     .addEventListener('click', function () {
+//       message.remove();
+//       // we don't need a queryselector here because message is already stored in memory.
+
+//       // message.parentElement.removeChild(message)
+//       // this is a bit outdated way to do this  - it is called dom traversing
+//     });
+
+//   // STYLES, ATTRIBUTES, and CLASSES
+
+//   // STYLES
+//   message.style.backgroundColor = '#37383d';
+//   message.style.width = '120%';
+//   // the above are called inline styles
+//   // we can console.log any style we set manually like
+
+//   // console.log(message.style.backgroundColor);
+//   // but we won't get a message if we did
+//   // console.log(message.style.color);
+
+//   // console.log(getComputedStyle(message));
+//   // this will output a huge object of all the styles
+
+//   // console.log(getComputedStyle(message).color);
+//   // this will output the color we were trying to use on line 110
+
+//   // message.style.height =
+//   //   Number.parseFloat(getComputedStyle(message).height, 10) + 40 + 'px';
+//   // the result of this is a string - so added the Number.parseFloat() to turn it into a number
+
+//   // CSS VARIABLES
+//   // can change a value in many places of all CSS files
+
+//   // :root  in CSS refers to the document element
+//   // document.documentElement.style.setProperty('--color-primary', 'orangered');
+//   // this is how we change style of page using javescript
+//   // works on most css
+
+//   // ATTRIBUTES
+//   // ex: in html  - src, alt, class
+//   // const logo = document.querySelector('.nav__logo');
+//   // console.log(logo.alt);
+//   // this will output: Bankist Logo  -- because alt is property of img logo
+
+//   // console.log(logo.src);
+//   // this will output: http://127.0.0.1:8080/13-Advanced-DOM-Bankist/starter/img/logo.png
+//   // which is the physical location of the logo image file
+
+//   // console.log(logo.className);
+//   // this will output: the class name nav__logo
+
+//   // NON STANDARD ATTRIBUTES
+//   // console.log(logo.designer);
+//   // this below will work, the above will not
+//   // console.log(logo.getAttribute('designer'));
+
+//   // console.log(logo.setAttribute('company', 'Bankist'));
+//   // this will set the company attribute to Bankist
+
+//   // console.log(logo.getAttribute('src'));
+//   // this will output: img/log.png
+
+//   // const link = document.querySelector('.twitter-link');
+//   // console.log(link.href);
+//   // this will output: the litteral link to twitter account
+
+//   // console.log(link.getAttribute('href'));
+
+//   // DATA ATTRIBUTES
+//   // console.log(logo.dataset.versionNumeber);
+//   // reference line 25 of html  = data-version-number="3.0"
+//   // this  can be very useful
+
+//   // CLASSES
+
+//   // logo.classList.add('c', 'j');
+//   // can use multiple classnames with use of ,
+//   // logo.classList.remove('c');
+//   // logo.classList.toggle('c');
+//   // logo.classList.contains('c'); // not includes like array
+
+//   // SHOULD NOT USE - will override whatever was originally there
+//   // logo.className = 'jonas'
+
+//   // btnScrollTo.addEventListener('click', function (e) {
+//   //   const s1cords = section1.getBoundingClientRect();
+
+//   // console.log(s1cords);
+//   // this will output:
+//   //   DOMRect {x: 0, y: 61, width: 825, height: 1736, top: 61, …}
+//   // bottom: 1797
+//   // height: 1736
+//   // left: 0
+//   // right: 825
+//   // top: 61
+//   // width: 825
+//   // x: 0  // measured from the left side
+//   // y: 61 // measured from the top
+
+//   // console.log(e.target.getBoundingClientRect());
+//   // this will output:
+//   // DOMRect {x: 30, y: 295, width: 112.46875, height: 29, top: 295, …}
+//   // x and y will change with a scroll
+
+//   // console.log('Current scroll (X/Y)', window.pageXOffset, window.pageYOffset);
+//   // this will output:
+//   // Current scroll (X/Y) 0 380
+
+//   // console.log(
+//   //   'height/width viewport',
+//   //   document.documentElement.clientHeight,
+//   //   document.documentElement.clientWidth
+//   // );
+//   // this will output: height/width viewport 330 825
+
+//   // SCROLLING
+//   // window.scrollTo(
+//   //   s1cords.left + window.pageXOffset,
+//   //   s1cords.top + window.pageYOffset
+//   // );
+//   // this is global function available on window object
+
+//   // OUTDATED WAY
+//   // window.scrollTo({
+//   //   left: s1cords.left + window.pageXOffset,
+//   //   top: s1cords.top + window.pageYOffset,
+//   //   behavior: 'smooth',
+//   // });
+
+//   // MORE MODERN WAY
+//   section1.scrollIntoView({ behavior: 'smooth' });
+//   // only works in modern browsers
+// });
+
+// ///////////////////////////////////////
+// // Page Navigation
+
+// // document.querySelectorAll('.nav__link').forEach(function (el) {
+// //   el.addEventListener('click', function (e) {
+// //     e.preventDefault();
+// //     const id = this.getAttribute('href');
+// //     console.log(id);
+// //     document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+// //   });
+// // });
+
+// // 1. Add event listener to common parent element
+// // 2. Determine what element originated the event
+// document.querySelector('.nav__links').addEventListener('click', function (e) {
+//   e.preventDefault();
+//   // console.log(e.target);
+
+//   // Matching strategy
+//   if (e.target.classList.contains('nav__link')) {
+//     const id = e.target.getAttribute('href');
+//     // console.log(id);
+//     document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+//   }
+//   // used the matching strategy because we wanted to only allow click on relevent elements inside container
+// });
 
 // EVENTS - MOUSE ENTER EVENT
 // const h1 = document.querySelector('h1');
@@ -320,7 +447,7 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
 // capturing is rarely used anymore
 
 // DOM TRAVERSING
-const h1 = document.querySelector('h1');
+// const h1 = document.querySelector('h1');
 
 // GOING DOWNWARDS
 //selecting child elements
@@ -377,3 +504,124 @@ const h1 = document.querySelector('h1');
 // if (el !== h1) el.style.transform = 'scale(0.5)';
 // this will change the style of all siblings of one element
 // });
+
+// TABBED COMPONENT
+// const tabs = document.querySelectorAll('.operations__tab');
+// const tabsContainer = document.querySelector('.operations__tab-container');
+// const tabsContent = document.querySelectorAll('.operations__content');
+
+// this is a bad practice because if we had 200 tabs it would slow down the page. so instead we use event delegation
+// tabs.forEach(t=>t.addEventListener('click', () => console.log('TAB')))
+// tabsContainer.addEventListener('click', function (e) {
+//   const clicked = e.target.closest('.operations__tab');
+// this will find the closest parent with .operations__tab name
+// console.log(clicked);
+
+// if(clicked) {
+//   clicked.classList.add('operations__tab--active');
+// }
+// the above is more outdated version see below for newest version
+// if (!clicked) return;
+// this is called a guard clause -- will return early
+// null is falsey value so the ! makes it truthy
+
+// remove active classes
+// tabs.forEach(t => t.classList.remove('operations__tab--active'));
+// tabsContent.forEach(c => c.classList.remove('operations__content--active'));
+
+// Active tab
+// clicked.classList.add('operations__tab--active');
+
+// Activate content area
+// console.log(clicked.dataset.tab);
+// document
+//   .querySelector(`.operations__content--${clicked.dataset.tab}`)
+//   .classList.add('operations__content--active');
+// everytime we click a button it is stored in clicked variable
+// });
+
+// Passing "argument" into handler
+
+// nav.addEventListener('mouseover', function (e) {
+//   handleHover(e, 0.5);
+// });
+// the above can be done better see below
+// nav.addEventListener('mouseover', handleHover.bind(0.5));
+
+// nav.addEventListener('mouseout', function (e) {
+//   handleHover(e, 1);
+// });
+// the above can be done better see below
+// nav.addEventListener('mouseout', handleHover.bind(1));
+
+// Sticky navigation
+// const initialCords = section1.getBoundingClientRect();
+// console.log(initialCords);
+// this will output:
+// DOMRect {x: 0, y: 540, width: 825, height: 1736, top: 540, …}
+
+// window.addEventListener('scroll', function (e) {
+// generally this is bad practice because of all the times the scroll event happens
+
+// console.log(e);
+// console.log(window.scrollY);
+
+// a point of view point from start to top of page
+//   if (window.scrollY > initialCords.top) nav.classList.add('sticky');
+//   else nav.classList.remove('sticky');
+// });
+
+// Sticky navigation
+
+// const initialCords = section1.getBoundingClientRect();
+// // console.log(initialCords);
+
+// window.addEventListener('scroll', function (e) {
+//   if (window.scrollY > initialCords.top) nav.classList.add('sticky');
+//   else nav.classList.remove('sticky');
+// });
+
+// STICKY NAVIGATION: Intersection Observer API
+
+// const obsCallback = function (entries, observer) {
+//   // whenever section1 is intersecting viewport at 10% (viewport = root) (10% = threshold)
+//   // will get called with 2 arguments
+//   // entries are array of threshold entries
+//   entries.forEach(entry => {
+//     console.log(entry);
+//     // this will output:
+//     // IntersectionObserverEntry {time: 1099.1999999969266, rootBounds: DOMRectReadOnly, boundingClientRect: DOMRectReadOnly, intersectionRect: DOMRectReadOnly, isIntersecting: true, …}
+//   });
+// };
+
+// const obsOptions = {
+//   root: null,
+//   // with null we will be able to see our intersecting view on entire view port
+//   threshold: [0, 0.2],
+//   // will target as soon as moves out of view (0) and when moving out of view (.2)
+// };
+
+// // to use start by creating:
+// const observer = new IntersectionObserver(obsCallback, obsOptions);
+// observer.observe(section1);
+
+// want navigation to become sticky when the header moves out of view
+// const header = document.querySelector('.header');
+// const navHeight = nav.getBoundingClientRect().height;
+// console.log(navHeight);
+// this will output:
+// DOMRect {x: 30, y: 0, width: 765, height: 90, top: 0, …}bottom: 90height: 90left: 30right: 795top: 0width: 765x: 30y: 0__proto__: DOMRect
+
+// const stickyNav = function (entries) {
+//   const [entry] = entries;
+//   // console.log(entry);
+//   if (!entry.isintersecting) nav.classList.add('sticky');
+//   else nav.classList.remove('sticky');
+// };
+
+// const headerObserver = new IntersectionObserver(stickyNav, {
+//   root: null,
+//   threshold: 0,
+//   rootMargin: `-${navHeight}px`,
+// });
+// headerObserver.observe(header);
