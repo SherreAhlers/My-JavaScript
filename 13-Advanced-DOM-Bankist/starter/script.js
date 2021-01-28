@@ -148,7 +148,6 @@ const allSections = document.querySelectorAll('.section');
 
 const revealSection = function (entries, observer) {
   const [entry] = entries;
-  // console.log(entry);
   if (!entry.isIntersecting) return;
 
   entry.target.classList.remove('section--hidden');
@@ -162,8 +161,128 @@ const sectionObserver = new IntersectionObserver(revealSection, {
 
 allSections.forEach(function (section) {
   sectionObserver.observe(section);
-  section.classList.add('section--hidden');
+  // section.classList.add('section--hidden');
 });
+
+// Lazy Loading Images
+const imgTargets = document.querySelectorAll('img[data-src]');
+// console.log(imgTargets);
+const loadImg = function (entries, observer) {
+  const [entry] = entries;
+
+  if (!entry.isIntersecting) return;
+
+  // Replace src attribute with data-src
+  entry.target.src = entry.target.dataset.src;
+
+  entry.target.addEventListener('load', function () {
+    entry.target.classList.remove('lazy-img');
+  });
+
+  observer.unobserve(entry.target);
+};
+
+const imgObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold: 0,
+  rootMargin: '200px',
+});
+
+imgTargets.forEach(img => imgObserver.observe(img));
+
+// Sliders - moving slides as we click buttons
+const slider = function () {
+  const slides = document.querySelectorAll('.slide');
+  const btnLeft = document.querySelector('.slider__btn--left');
+  const btnRight = document.querySelector('.slider__btn--right');
+  const dotContainer = document.querySelector('.dots');
+
+  let curSlide = 0;
+  const maxSlide = slides.length;
+
+  // const slider = document.querySelector('.slider');
+  // slider.style.transform = 'scale(0.4) translateX(-800px)';
+  // slider.style.overflow = 'visible';
+
+  // slides.forEach((s, i) => (s.style.transform = `translateX(${100 * i}%)`));
+  // first slide 0%, 2nd slide 100%, 3rd slide 300%, 4th slide 300%
+
+  // FUNCTIONS
+  const createDots = function () {
+    slides.forEach(function (_, i) {
+      dotContainer.insertAdjacentHTML(
+        'beforeend',
+        `<button class="dots__dot" data-slide="${i}"></button>`
+      );
+    });
+  };
+
+  const activateDot = function (slide) {
+    document
+      .querySelectorAll('.dots__dot')
+      .forEach(dot => dot.classList.remove('dots__dot--active'));
+
+    document
+      .querySelector(`.dots__dot[data-slide="${slide}"]`)
+      .classList.add('dots__dot--active');
+  };
+
+  const goToSlide = function (slide) {
+    slides.forEach(
+      (s, i) => (s.style.transform = `translateX(${100 * (i - slide)}%)`)
+    );
+  };
+
+  // NEXT SLIDE
+  const nextSlide = function () {
+    if (curSlide === maxSlide - 1) {
+      curSlide = 0;
+    } else {
+      curSlide++;
+    }
+
+    goToSlide(curSlide);
+    activateDot(curSlide);
+  };
+
+  const prevSlide = function () {
+    if (curSlide === 0) {
+      curSlide = maxSlide - 1;
+    } else {
+      curSlide--;
+    }
+    goToSlide(curSlide);
+    activateDot(curSlide);
+  };
+
+  const init = function () {
+    goToSlide(0);
+    createDots();
+    activateDot(0);
+  };
+  init();
+
+  // EVENT HANDLERS
+  btnRight.addEventListener('click', nextSlide);
+  btnLeft.addEventListener('click', prevSlide);
+
+  document.addEventListener('keydown', function (e) {
+    console.log(e);
+    if (e.key === 'ArrowLeft') prevSlide();
+    e.key === 'ArrowRight' && nextSlide();
+  });
+
+  dotContainer.addEventListener('click', function (e) {
+    if (e.target.classList.contains('dots__dot')) {
+      // console.log('DOT');
+      const { slide } = e.target.dataset;
+      goToSlide(slide);
+      activateDot(slide);
+    }
+  });
+};
+
+slider();
 
 //////////////////////////////////////////////////////////////////
 // LECTURE
@@ -625,3 +744,66 @@ allSections.forEach(function (section) {
 //   rootMargin: `-${navHeight}px`,
 // });
 // headerObserver.observe(header);
+
+// Lazy Loading Images
+// const imgTargets = document.querySelectorAll('img[data-src]');
+// console.log(imgTargets);
+// this will output: NodeList(3)
+// 0: img.features__img.lazy-img
+// 1: img.features__img.lazy-img
+// 2: img.features__img.lazy-img
+// length: 3
+// const loadImg = function (entries, observer) {
+// const [entry] = entries;
+// console.log(entry);
+
+// if (!entry.isIntersecting) return;
+
+// Replace src attribute with data-src
+// entry.target.src = entry.target.dataset.src;
+
+// entry.target.addEventListener('load', function () {
+// entry.target.classList.remove('lazy-img');
+// });
+
+// observer.unobserve(entry.target);
+// };
+
+// const imgObserver = new IntersectionObserver(loadImg, {
+// root: null,
+// threshold: 0,
+// rootMargin: '200px',
+// });
+
+// imgTargets.forEach(img => imgObserver.observe(img));
+
+// DOM CONTENT LOADED EVENT
+// happens on document
+
+// document.addEventListener('DOMContentLoaded', function (e) {
+// just javascript and html need to be loaded
+
+// console.log('HTML parsed and DOM tree built!', e);
+// this will output:
+// HTML parsed and DOM tree built!
+// Event {isTrusted: true, type: "DOMContentLoaded", target: document, currentTarget: document, eventPhase: 2, …}bubbles: truecancelBubble: falsecancelable: falsecomposed: falsecurrentTarget: nulldefaultPrevented: falseeventPhase: 0isTrusted: truepath: (2) [document, Window]returnValue: truesrcElement: documenttarget: documenttimeStamp: 3136.9250000025204type: "DOMContentLoaded"__proto__: Event
+
+// do not have to listen to DOMContentLoaded if you have the script tag above the end of body in HTML
+// });
+
+// window.addEventListener('load', function (e) {
+// console.log('Page fully loaded', e);
+// will get first event then when everything is loaded will get another event
+// });
+
+// window.addEventListener('beforeunload', function(e) {
+// this event is created immediatly before a user is about to close the page
+// can use event to ask users if 100% sure want to leave page
+// e.preventDefault();
+
+// console.log(e);
+
+// e.returnValue = '';
+// now when try to close page, will get pop up asking if want to leave site
+
+// })
