@@ -200,13 +200,6 @@ const slider = function () {
   let curSlide = 0;
   const maxSlide = slides.length;
 
-  // const slider = document.querySelector('.slider');
-  // slider.style.transform = 'scale(0.4) translateX(-800px)';
-  // slider.style.overflow = 'visible';
-
-  // slides.forEach((s, i) => (s.style.transform = `translateX(${100 * i}%)`));
-  // first slide 0%, 2nd slide 100%, 3rd slide 300%, 4th slide 300%
-
   // FUNCTIONS
   const createDots = function () {
     slides.forEach(function (_, i) {
