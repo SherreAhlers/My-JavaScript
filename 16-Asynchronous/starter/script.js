@@ -1,7 +1,7 @@
 'use strict';
 
-const btn1 = document.querySelector('.btn-country');
-const countriesContainer1 = document.querySelector('.countries');
+// const btn1 = document.querySelector('.btn-country');
+// const countriesContainer1 = document.querySelector('.countries');
 
 const renderCountry = function (data, className = '') {
   const html = `
@@ -339,3 +339,232 @@ btn1.addEventListener('click', function () {
 // -- how to handle promise rejections
 
 // fetch only rejects when user loses internet connection
+
+// console.log('Test start');
+// this will run 1st
+
+// setTimeout(() => console.log('0 sec timer'), 0);
+// both timer and promise will finish after 0 sec
+// this will run 4th
+// cannot do high precision js with setTimeOut
+
+// Promise.resolve('Resolved promise 1').then(res => console.log(res));
+// this allows us to create a promise that is immediatly resolved
+// this will run 3rd
+
+// Promise.resolve('Resolved promise 2').then(res => {
+// for (let i = 0; i < 1000000; i++) {
+// the above simulates that this promise's the micro-task will take a long time
+// }
+
+// console.log(res);
+// });
+// console.log('Test end');
+// this will run 2nd
+
+// BUILDING MY OWN PROMISE -- SIMULATE LOTTERY -- reject promise means to lose, fulfilled promises mean to win.
+
+// ----------------CODE CHALLENGE---------------------------
+
+// const btn = document.querySelector('.btn-country');
+// const countriesContainer = document.querySelector('.countries');
+
+// const renderCountry1 = function (data, className = '') {
+//   const html = `
+//         <article class="country ${className}">
+//           <img class="country__img" src="${data.flag}" />
+//           <div class="country__data">
+//             <h3 class="country__name">${data.name}</h3>
+//             <h4 class="country__region">${data.region}</h4>
+//             <p class="country__row"><span>👫</span>${(
+//               +data.population / 10000000
+//             ).toFixed(1)} million people</p>
+//             <p class="country__row"><span>🗣️</span>${data.languages[0].name}</p>
+//             <p class="country__row"><span>💰</span>${
+//               data.currencies[0].name
+//             }</p>
+//           </div>
+//         </article>
+//         `;
+
+//   countriesContainer.insertAdjacentHTML('beforeend', html);
+//   countriesContainer.style.opacity = 1;
+// };
+
+// const renderError1 = function (msg) {
+//   countriesContainer.insertAdjacentText('beforeend', msg);
+//   countriesContainer.style.opacity = 1;
+// };
+
+// const getJSON = function (url, errorMsg = 'Something went wrong') {
+//   return fetch(url).then(response => {
+//     if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
+
+//     return response.json();
+//   });
+// };
+
+// -------------CODE CHALLENGE #1------------------------
+
+// Part 1
+// 1. Create a function 'whereAmI' which takes as inputs a latitude value (lat) and a longitude value (lng) (these are GPS coordinates, examples are below).
+
+// 2. Do 'reverse geocoding' of the provided coordinates. Reverse geocoding means to convert coordinates to a meaningul location, like a city and country name. Use this API to do reverse geocoding:
+// https://geocode.xyz/api
+// The AJAX call will be done to a URL with this format:
+// https://geocode.xyz/52.508,13.3817geoit=json
+// Use fetch API and promises to get the data. Do NOT use the getJSON function we created, that is cheating :)
+
+// 3. Once you have the DataCue, take a look at it in the console to see all the attributes that you recieved about the provided location. Then, using this data, log a message to the console: 'You are in Berlin, Germany'
+
+// 4. Chain a .catch method to the end of the promise chain and log errors to the console.error
+
+// 5. This API allows you to make only 3 requests per second. If you reload fast, you will get this error with code 403. This is an error with the request. Remember, fetch() does NOT reject the promise in this case. So create an error to reject the promise yourself, with a meaningful error message.
+
+// Part 2
+// 6. Now it's time to use the recieved data to render a country. So take the relevant attribute from the geocoding API that we have been using.
+
+// 7. Render the country and catch any errors, just like we have done in the last lecture (you can even copu this code, no need to type the same code.)
+
+// TEST COORDIDINATES 1: 52.508, 13.381 (Latitude, Longitude)
+// TEST COORDINATES 2: 19.037, 72.873
+// TEST COORDINATES 3: -33.933, 18.474
+
+// const whereAmI = function (lat, lng) {
+//   fetch(`https://geocode.xyz/${lat}, ${lng}?geoit=json`)
+//     .then(res => {
+//       if (!res.ok) throw new Error(`Problem with geocoding ${status.code}`);
+//       return res.json();
+//     })
+//     .then(data => {
+//       //   console.log(data);
+//       //   console.log(`You are in ${data.city}, ${data.country}`);
+
+//       return fetch(`https://restcountries.eu/rest/v2/name/${data.country}`);
+//     })
+//     .then(res => {
+//       if (!res.ok) throw new Error(`Country not found (${res.status})`);
+
+//       return res.json();
+//     })
+//     .then(data => renderCountry1(data[0]))
+//     .catch(err => console.error(`${err.message}!!`));
+// };
+
+// whereAmI(52.508, 13.381);
+// this will bring up the object for Berlin, Germany
+
+// whereAmI(19.037, 72.873);
+// this will bring up the object for Mumbai, India
+
+// whereAmI(-33.933, 18.474);
+// this will bring up the object for Cape Town, South Africa
+
+// const lotteryPromise = new Promise(function (resolve, reject) {
+// this function is called the executer function
+// this will create a new promise
+// executer function will produce a value
+// console.log('Lottery draw is happening!!');
+// setTimeout(function () {
+//   if (Math.random() >= 0.5) {
+//     // the above means we win lottery which means it is a fulfilled promise by calling the resolve method below
+//     resolve('You WIN $');
+//     // in resolve method we pass the fulfilled value - the result of the promise that will be available in the then handler
+//   } else {
+//     reject(new Error('You lose $ :('));
+//     // in the reject method we place the message we want in the catch() method
+//     // creating a new Error()  is a best practice
+//   }
+// }, 2000);
+// });
+
+// lotteryPromise.then(res => console.log(res)).catch(err => console.error(err));
+// this will output: You WIN $
+// if keep reloading it will throw the error (reject()) = You lose $ :( )
+
+// more real world example of promisifying setTimeOut
+// const wait = function (seconds) {
+//   return new Promise(function (resolve) {
+//     setTimeout(resolve, seconds * 1000);
+//   });
+// };
+
+// wait(1)
+//   .then(() => {
+//     // console.log('1 second passed');
+//     return wait(1);
+//   })
+//   .then(() => {
+//     // console.log('2 seconds passed');
+//     return wait(1);
+//   })
+//   .then(() => {
+//     // console.log('3 seconds passed');
+//     return wait(1);
+//   });
+
+// .then(() => console.log('4 seconds passed'));
+// the above is a chain of promises without callback hell
+// below is the same code - with callback hell
+
+// THIS IS EXAMPLE OF CALLBACK HELL!!
+// setTimeout(() => {
+//   console.log('1 second passed');
+//   setTimeout(() => {
+//     console.log('2 seconds passed');
+//     setTimeout(() => {
+//       console.log('3 seconds passed');
+//       setTimeout(() => {
+//         console.log('4 seconds passed');
+//       }, 1000);
+//     }, 1000);
+//   }, 1000);
+// }, 1000);
+
+// Promise.resolve('abc').then(x => console.log(x));
+// this will resolve immediately because of the .resolve
+// Promise.reject(new Error('Problem')).catch(x => console.error(x));
+
+// const getPosition = function () {
+//   return new Promise(function (resolve, reject) {
+//     // can use above to mark promise as fulfilled or rejected
+//     // navigator.geolocation.getCurrentPosition(
+//     //   position => resolve(position),
+//     //   err => reject(err)
+//     // );
+
+//     // OR LIKE BELOW
+//     navigator.geolocation.getCurrentPosition(resolve, reject);
+//   });
+// };
+
+// // getPosition().then(pos => console.log(pos));
+
+// const whereAmI2 = function () {
+//   getPosition()
+//     .then(pos => {
+//       const { latitude: lat, longitude: lng } = pos.coords;
+//       // console.log(pos.coords);
+
+//       return fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
+//     })
+//     .then(res => {
+//       if (!res.ok) throw new Error(`Problem with geocoding ${res.status}`);
+//       return res.json();
+//     })
+//     .then(data => {
+//       // console.log(data);
+//       // console.log(`You are in ${data.city}, ${data.country}`);
+
+//       return fetch(`https://restcountries.eu/rest/v2/name/${data.country}`);
+//     })
+//     .then(res => {
+//       if (!res.ok) throw new Error(`Country not found (${res.status})`);
+
+//       return res.json();
+//     })
+//     .then(data => renderCountry(data[0]));
+//   // .catch(err => console.error(`${err.message}!!`));
+// };
+
+// btn.addEventListener('click', whereAmI2);

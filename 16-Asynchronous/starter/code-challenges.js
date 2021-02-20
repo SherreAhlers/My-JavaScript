@@ -1,42 +1,41 @@
 'use strict';
+// const btn = document.querySelector('.btn-country');
+// const countriesContainer = document.querySelector('.countries');
 
-const btn = document.querySelector('.btn-country');
-const countriesContainer = document.querySelector('.countries');
+// const renderCountry1 = function (data, className = '') {
+//   const html = `
+//         <article class="country ${className}">
+//           <img class="country__img" src="${data.flag}" />
+//           <div class="country__data">
+//             <h3 class="country__name">${data.name}</h3>
+//             <h4 class="country__region">${data.region}</h4>
+//             <p class="country__row"><span>👫</span>${(
+//               +data.population / 10000000
+//             ).toFixed(1)} million people</p>
+//             <p class="country__row"><span>🗣️</span>${data.languages[0].name}</p>
+//             <p class="country__row"><span>💰</span>${
+//               data.currencies[0].name
+//             }</p>
+//           </div>
+//         </article>
+//         `;
 
-const renderCountry1 = function (data, className = '') {
-  const html = `
-        <article class="country ${className}">
-          <img class="country__img" src="${data.flag}" />
-          <div class="country__data">
-            <h3 class="country__name">${data.name}</h3>
-            <h4 class="country__region">${data.region}</h4>
-            <p class="country__row"><span>👫</span>${(
-              +data.population / 10000000
-            ).toFixed(1)} million people</p>
-            <p class="country__row"><span>🗣️</span>${data.languages[0].name}</p>
-            <p class="country__row"><span>💰</span>${
-              data.currencies[0].name
-            }</p>
-          </div>
-        </article>
-        `;
+//   countriesContainer.insertAdjacentHTML('beforeend', html);
+//   countriesContainer.style.opacity = 1;
+// };
 
-  countriesContainer.insertAdjacentHTML('beforeend', html);
-  countriesContainer.style.opacity = 1;
-};
+// const renderError1 = function (msg) {
+//   countriesContainer.insertAdjacentText('beforeend', msg);
+//   countriesContainer.style.opacity = 1;
+// };
 
-const renderError1 = function (msg) {
-  countriesContainer.insertAdjacentText('beforeend', msg);
-  countriesContainer.style.opacity = 1;
-};
+// const getJSON = function (url, errorMsg = 'Something went wrong') {
+//   return fetch(url).then(response => {
+//     if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
 
-const getJSON = function (url, errorMsg = 'Something went wrong') {
-  return fetch(url).then(response => {
-    if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
-
-    return response.json();
-  });
-};
+//     return response.json();
+//   });
+// };
 
 // CODE CHALLENGE #1
 
@@ -64,26 +63,26 @@ const getJSON = function (url, errorMsg = 'Something went wrong') {
 // TEST COORDINATES 2: 19.037, 72.873
 // TEST COORDINATES 3: -33.933, 18.474
 
-const whereAmI = function (lat, lng) {
-  fetch(`https://geocode.xyz/${lat}, ${lng}?geoit=json`)
-    .then(res => {
-      if (!res.ok) throw new Error(`Problem with geocoding ${status.code}`);
-      return res.json();
-    })
-    .then(data => {
-      //   console.log(data);
-      //   console.log(`You are in ${data.city}, ${data.country}`);
+// const whereAmI = function (lat, lng) {
+//   fetch(`https://geocode.xyz/${lat}, ${lng}?geoit=json`)
+//     .then(res => {
+//       if (!res.ok) throw new Error(`Problem with geocoding ${status.code}`);
+//       return res.json();
+//     })
+//     .then(data => {
+//   console.log(data);
+//   console.log(`You are in ${data.city}, ${data.country}`);
 
-      return fetch(`https://restcountries.eu/rest/v2/name/${data.country}`);
-    })
-    .then(res => {
-      if (!res.ok) throw new Error(`Country not found (${res.status})`);
+//       return fetch(`https://restcountries.eu/rest/v2/name/${data.country}`);
+//     })
+//     .then(res => {
+//       if (!res.ok) throw new Error(`Country not found (${res.status})`);
 
-      return res.json();
-    })
-    .then(data => renderCountry1(data[0]))
-    .catch(err => console.error(`${err.message}!!`));
-};
+//       return res.json();
+//     })
+//     .then(data => renderCountry1(data[0]))
+//     .catch(err => console.error(`${err.message}!!`));
+// };
 
 // whereAmI(52.508, 13.381);
 // this will bring up the object for Berlin, Germany
@@ -93,3 +92,68 @@ const whereAmI = function (lat, lng) {
 
 // whereAmI(-33.933, 18.474);
 // this will bring up the object for Cape Town, South Africa
+
+// CODE CHALLENGE # 2
+// Build the image loading functionality that I just showed you on the screen
+
+// Part 1.
+// 1. Create a function 'createImage' which recieves imgPath as an input. This function returns a promise which creates a new image (use document.createElement('img')) and sets the .src attribute to the provided image path. When the image is done loading, append it to the DOM element with the 'images' class, and resolve the promise. The fulfilled value should be the image element itself. In case there is an error loading the image ('error' event), reject the promise.
+
+// Part 2
+// 2. Consume the promise using .then and also add an error handler;
+
+// 3. After the image has loaded, pause execution for 2 seconds using the wait function we created earlier.
+
+// 4. After the 2 seconds have passed, hide the current image (set display to 'none), and load a second image (HINT: Use the image element returned by the createImage promise to hide the current image. You will need a global variable for that).
+
+// 5. After the second image has loaded, pause execution for 2 seconds again.
+
+// 6. After the 2 seconds have passed, hide the current image.
+
+// TEXT DATA: Images in the img folder. Test the error handler by passing a wrong image path. Set the network speed to 'Fast 3G' in the dev tools Network tab. otherwise images load too fast.
+
+// const wait = function (seconds) {
+//   return new Promise(function (resolve) {
+//     setTimeout(resolve, seconds * 1000);
+//   });
+// };
+
+// const imgContainer = document.querySelector('.images');
+
+// const createImage = function (imgPath) {
+//   return new Promise(function (resolve, reject) {
+//     const img = document.createElement('img');
+//     img.src = imgPath;
+
+//     img.addEventListener('load', function () {
+//       imgContainer.append(img);
+//       resolve(img);
+//     });
+
+//     img.addEventListener('error', function () {
+//       reject(new Error('Image not found.'));
+//     });
+//   });
+// };
+
+// let currentImg;
+
+// createImage('img/img-1.jpg')
+//   .then(img => {
+//     currentImg = img;
+//     console.log('Image 1 loaded.');
+//     return wait(2);
+//   })
+//   .then(() => {
+//     currentImg.style.display = 'none';
+//     return createImage('img/img-2.jpg');
+//   })
+//   .then(img => {
+//     currentImg = img;
+//     console.log('Image 2 loaded.');
+//     return wait(2);
+//   })
+//   .then(() => {
+//     currentImg.style.display = 'none';
+//   })
+//   .catch(err => console.error(err));
