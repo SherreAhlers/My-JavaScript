@@ -1,73 +1,73 @@
-'use strict';
+// 'use strict';
 
-// const btn1 = document.querySelector('.btn-country');
-// const countriesContainer1 = document.querySelector('.countries');
+// const btn = document.querySelector('.btn-country');
+// const countriesContainer = document.querySelector('.countries');
 
-const renderCountry = function (data, className = '') {
-  const html = `
-        <article class="country ${className}">
-          <img class="country__img" src="${data.flag}" />
-          <div class="country__data">
-            <h3 class="country__name">${data.name}</h3>
-            <h4 class="country__region">${data.region}</h4>
-            <p class="country__row"><span>👫</span>${(
-              +data.population / 10000000
-            ).toFixed(1)} million people</p>
-            <p class="country__row"><span>🗣️</span>${data.languages[0].name}</p>
-            <p class="country__row"><span>💰</span>${
-              data.currencies[0].name
-            }</p>
-          </div>
-        </article>
-        `;
+// const renderCountry = function (data, className = '') {
+//   const html = `
+//         <article class="country ${className}">
+//           <img class="country__img" src="${data.flag}" />
+//           <div class="country__data">
+//             <h3 class="country__name">${data.name}</h3>
+//             <h4 class="country__region">${data.region}</h4>
+//             <p class="country__row"><span>👫</span>${(
+//               +data.population / 10000000
+//             ).toFixed(1)} million people</p>
+//             <p class="country__row"><span>🗣️</span>${data.languages[0].name}</p>
+//             <p class="country__row"><span>💰</span>${
+//               data.currencies[0].name
+//             }</p>
+//           </div>
+//         </article>
+//         `;
 
-  countriesContainer1.insertAdjacentHTML('beforeend', html);
-};
+//   countriesContainer.insertAdjacentHTML('beforeend', html);
+// };
 
-// MODERN WAY  -- PROMISES
-const renderError = function (msg) {
-  countriesContainer.insertAdjacentText('beforeend', msg);
-};
+// // MODERN WAY  -- PROMISES
+// const renderError = function (msg) {
+//   countriesContainer.insertAdjacentText('beforeend', msg);
+// };
 
-const getJSON1 = function (url, errorMsg = 'Something went wrong') {
-  return fetch(url).then(response => {
-    if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
+// const getJSON = function (url, errorMsg = 'Something went wrong') {
+//   return fetch(url).then(response => {
+//     if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
 
-    return response.json();
-  });
-};
+//     return response.json();
+//   });
+// };
 
-const getCountryData = function (country) {
-  // Country 1
-  getJSON1(
-    `https://restcountries.eu/rest/v2/name/${country}`,
-    'Country not found.'
-  )
-    .then(data => {
-      renderCountry(data[0]);
-      const neighbour = data[0].borders[0];
+// const getCountryData = function (country) {
+//   // Country 1
+//   getJSON(
+//     `https://restcountries.eu/rest/v2/name/${country}`,
+//     'Country not found.'
+//   )
+//     .then(data => {
+//       renderCountry(data[0]);
+//       const neighbour = data[0].borders[0];
 
-      if (!neighbour) throw new Error('No neighbour found!');
+//       if (!neighbour) throw new Error('No neighbour found!');
 
-      // Country 2
-      return getJSON1(
-        `https://restcountries.eu/rest/v2/alpha/${neighbour}`,
-        'Country not found'
-      );
-    })
-    .then(data => renderCountry(data, 'neighbour'))
-    .catch(err => {
-      console.error(`${err}!!!`);
-      renderError(`Something went wrong!! ${err.message}. Try again!`);
-    })
-    .finally(() => {
-      countriesContainer.style.opacity = 1;
-    });
-};
+//       // Country 2
+//       return getJSON(
+//         `https://restcountries.eu/rest/v2/alpha/${neighbour}`,
+//         'Country not found'
+//       );
+//     })
+//     .then(data => renderCountry(data, 'neighbour'))
+//     .catch(err => {
+//       console.error(`${err}!!!`);
+//       renderError(`Something went wrong!! ${err.message}. Try again!`);
+//     })
+//     .finally(() => {
+//       countriesContainer.style.opacity = 1;
+//     });
+// };
 
-btn1.addEventListener('click', function () {
-  getCountryData('usa');
-});
+// btn.addEventListener('click', function () {
+//   getCountryData('usa');
+// });
 
 // const getCountryData = function (country) {
 //   // Country 1
@@ -105,6 +105,10 @@ btn1.addEventListener('click', function () {
 //       countriesContainer.style.opacity = 1;
 //     });
 // };
+
+// btn.addEventListener('click', function () {
+//   getCountryData('usa');
+// });
 
 // OUTDATED WAY TO CALL AJAX WITHOUT PROMISES
 
@@ -568,3 +572,157 @@ btn1.addEventListener('click', function () {
 // };
 
 // btn.addEventListener('click', whereAmI2);
+
+// ---------- Async await--------------------
+// this is a function that will perform code in the background while performing code that is inside of it. When function is done it will automatically return a promise.
+
+// const getPosition = function () {
+//   return new Promise(function (resolve, reject) {
+//     navigator.geolocation.getCurrentPosition(resolve, reject);
+//   });
+// };
+
+// const whereAmI = async function (country) {
+//   try {
+//     // Geolocation
+//     const pos = await getPosition();
+//     const { latitude: lat, longitude: lng } = pos.coords;
+
+//     // Reverse geocoding
+//     const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
+//     if (!resGeo.ok) throw new Error('Problem getting location data');
+
+//     const dataGeo = await resGeo.json();
+//     // console.log(dataGeo);
+
+//     // Country data
+//     // fetch(`https://restcountries.eu/rest/v2/name/${country}`).then(res => console.log(res))
+
+//     // the above is exactly the same as below (below is more efficient)
+
+//     const res = await fetch(
+//       `https://restcountries.eu/rest/v2/name/${dataGeo.country}`
+//     );
+//     if (!resGeo.ok) throw new Error('Problem getting country');
+//     // fetch is the promise
+//     // await will stop the code execution at this point of the function until the promise has been fulfilled (until data has been fetched)
+
+//     const data = await res.json();
+//     renderCountry(data[0]);
+
+//     return `You are in ${dataGeo.city}, ${dataGeo.country}`;
+//   } catch (err) {
+//     // console.error(`${err} !!`);
+//     renderError(`${err.message}`);
+
+//     // Reject promise returned from async function
+//     throw err;
+//   }
+// };
+
+// console.log('1: WILL GET LOCATION');
+// const city = whereAmI();
+// console.log(city);
+// console.log('FIRST');
+
+// whereAmI()
+//   .then(city => console.log(`2: ${city}`))
+//   .catch(err => console.error(`2: ${err.message} !!`))
+//   .finally(() => console.log(`Finished getting location`));
+// console.log('3: FINISHED GETTING LOCATION');
+
+// the above code is same as below code
+
+// (async function () {
+//   try {
+//     const city = await whereAmI();
+//     console.log(`2: ${city}`);
+//   } catch (err) {
+//     console.error(`2: ${err.message} !!`);
+//   }
+//   console.log(`3: Finished getting location`);
+// })();
+// --------TRY CATCH---------------------
+
+// try {
+//   let y = 1;
+//   const x = 2;
+//   x = 3;
+// } catch (err) {
+//   alert(err.message);
+//   // this will pop up : Assignment to constant variable  -- which is the catch block
+// }
+
+// const get3Countries = async function (c1, c2, c3) {
+// try {
+// const [data1] = await getJSON(
+//   `https://restcountries.eu/rest/v2/name/${c1}`
+// );
+// const [data2] = await getJSON(
+//   `https://restcountries.eu/rest/v2/name/${c2}`
+// );
+// const [data3] = await getJSON(
+//   `https://restcountries.eu/rest/v2/name/${c3}`
+// );
+
+// COMBINATOR FUNCTION
+// const data = await Promise.all([
+//   getJSON(`https://restcountries.eu/rest/v2/name/${c1}`),
+//   getJSON(`https://restcountries.eu/rest/v2/name/${c2}`),
+//   getJSON(`https://restcountries.eu/rest/v2/name/${c3}`),
+// ]);
+// Promise.all recieves an array and returns a new promise
+// console.log(data.map(d => d[0].capital));
+
+// console.log([data1.capital, data2.capital, data3.capital]);
+// console.log(data);
+// } catch (err) {
+// console.error(err);
+// }
+// };
+
+// get3Countries('portugal', 'canada', 'tanzania');
+// this will output: (3) ["Lisbon", "Ottawa", "Dodoma"]
+
+// COMBINATORS
+// 1. Promise.race()  -- recieves an array of promises and returns a promise
+// settled as soon as one of imput promises settled -- means a value is available -- doesn't matter if promise was rejected or fulfilled.
+// (async function () {
+//   const res = await Promise.race([
+//     getJSON(`https://restcountries.eu/rest/v2/name/italy`),
+//     getJSON(`https://restcountries.eu/rest/v2/name/egypt`),
+//     getJSON(`https://restcountries.eu/rest/v2/name/mexico`),
+//   ]);
+// console.log(res[0]);
+// this will outpus: {name: "Italy", topLevelDomain: Array(1), alpha2Code: "IT", alpha3Code: "ITA", callingCodes: Array(1), …}
+// })();
+
+// const timeout = function (sec) {
+//   return new Promise(function (_, reject) {
+//     setTimeout(function () {
+//       reject(new Error('Request took too long!'));
+//     }, sec * 1000);
+//   });
+// };
+
+// Promise.race([
+//   getJSON(`http://restcountries.eu/rest/v2/name/tanzania`),
+//   timeout(0.1),
+// ]);
+// .then(res => console.log(res[0]))
+// .catch(err => console.error(err));
+
+// 2. Promise.allSettled()
+// will return array of all settled promises - whether rejected or not -- never short circuits
+// Promise.allSettled([
+//   Promise.resolve('Sucess'),
+//   Promise.reject('ERROR'),
+//   Promise.resolve('Another success'),
+// ]);
+// .then(res => console.log(res))
+// this will output:
+// (3) [{…}, {…}, {…}]
+// 0: {status: "fulfilled", value: "Sucess"}
+// 1: {status: "rejected", reason: "ERROR"}
+// 2: {status: "fulfilled", value: "Another success"}
+// .catch(err => console.error(err));
